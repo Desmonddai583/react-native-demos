@@ -13,9 +13,13 @@ class PopularPage extends Component {
       <View style={styles.container}>
         <NavigationBar 
           title='最热'
-          style={{ backgroundColor: '#2196F3' }}
+          statusBar={{ backgroundColor: '#2196F3' }}
         />
         <ScrollableTabView
+          tabBarBackgroundColor="#2196F3"
+          tabBarInactiveTextColor="mintcream"
+          tabBarActiveTextColor="white"
+          tabBarUnderlineStyle={{ backgroundColor: '#e7e7e7', height: 2 }}
           renderTabBar={() => <ScrollableTabBar />}
         >
           <PopularTab tabLabel="Jave">JAVA</PopularTab>

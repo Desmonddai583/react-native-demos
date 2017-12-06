@@ -21,14 +21,14 @@ export default class HomePage extends Component {
         <TabNavigator>
           <TabNavigator.Item
             selected={this.state.selectedTab === 'tb_popular'}
-            selectedTitleStyle={{ color: 'red' }}
+            selectedTitleStyle={{ color: '#2196F3' }}
             title="最热"
             renderIcon={() => 
               <Image style={styles.image} source={require('../../res/images/ic_popular.png')} />
             }
             renderSelectedIcon={() => 
               <Image 
-                style={[styles.image, { tintColor: 'red' }]} 
+                style={[styles.image, { tintColor: '#2196F3' }]} 
                 source={require('../../res/images/ic_popular.png')} 
               />
             }

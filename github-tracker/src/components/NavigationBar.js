@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { 
   View, 
-  Text, 
-  Image,
+  Text,
   StyleSheet,
   Platform,
   StatusBar
@@ -16,7 +15,7 @@ const StatusBarShape = {
   backgroundColor: PropTypes.string,
   barStyle: PropTypes.oneOf(['default', 'light-content', 'dark-content']),
   hidden: PropTypes.bool
-}
+};
 
 export default class NavigationBar extends Component {
   static propTypes = {
@@ -26,7 +25,7 @@ export default class NavigationBar extends Component {
     titleLayoutStyle: View.propTypes.style,
     hide: PropTypes.bool,
     statusBar: PropTypes.shape(StatusBarShape),
-    rightButton:  PropTypes.element,
+    rightButton: PropTypes.element,
     leftButton: PropTypes.element,
   }
 
@@ -48,34 +47,36 @@ export default class NavigationBar extends Component {
   getButtonElement(data) {
     return (
       <View style={styles.navBarButton}>
-        {data ? data : null}
+        {data || null}
       </View>
     );
   }
 
   render() {
-    const statusBar = !this.props.statusBar.hidden ?
+    const statusBar = !this.props.statusBar.hidden ? (
       <View style={styles.statusBar}>
         <StatusBar {...this.props.statusBar} />
-      </View> : null;
+      </View>
+    ) : null;
 
     const titleView = this.props.titleView ? this.props.titleView :
       <Text ellipsizeMode="head" numberOfLines={1} style={styles.title}>{this.props.title}</Text>;
 
-    let content = this.props.hide ? null :
+    const content = this.props.hide ? null : (
       <View style={styles.navBar}>
         {this.getButtonElement(this.props.leftButton)}
-        <View style={[styles.navBarTitleContainer,this.props.titleLayoutStyle]}>
+        <View style={[styles.navBarTitleContainer, this.props.titleLayoutStyle]}>
           {titleView}
         </View>
         {this.getButtonElement(this.props.rightButton)}
-      </View>;
+      </View>
+    );
     return (
       <View style={[styles.container, this.props.style]}>
         {statusBar}
         {content}
       </View>
-    )
+    );
   }
 }
 
@@ -108,4 +109,4 @@ const styles = StyleSheet.create({
   statusBar: {
     height: Platform.OS === 'ios' ? STATUS_BAR_HEIGHT : 0,
   },
-})
+});
