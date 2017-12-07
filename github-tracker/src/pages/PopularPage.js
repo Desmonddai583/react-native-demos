@@ -1,13 +1,24 @@
 import React, { Component } from 'react';
 import { 
   View,
-  StyleSheet
+  StyleSheet,
+  Image
 } from 'react-native';
 import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view';
 import NavigationBar from '../components/NavigationBar';
 import PopularTab from '../components/PopularTab';
 
 class PopularPage extends Component {
+  static navigationOptions = () => ({
+    title: '最热',
+    tabBarIcon: ({ tintColor }) => (
+      <Image 
+        style={{ tintColor: tintColor, height: 22, width: 22 }} 
+        source={require('../../res/images/ic_popular.png')} 
+      />
+    )
+  });
+
   render() {
     return (
       <View style={styles.container}>

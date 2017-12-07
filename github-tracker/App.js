@@ -1,12 +1,13 @@
 import React from 'react';
 import { 
-  Navigator,
   View,
   StyleSheet
 } from 'react-native';
-import { TabNavigator } from 'react-navigation';
+import { TabNavigator, StackNavigator } from 'react-navigation';
 import WelcomePage from './src/pages/WelcomePage';
-import HomePage from './src/pages/HomePage';
+import PopularPage from './src/pages/PopularPage';
+import MyPage from './src/pages/MyPage';
+import CustomKeyPage from './src/pages/MyPage/CustomKeyPage';
 
 export default class App extends React.Component {
   render() {
@@ -14,10 +15,23 @@ export default class App extends React.Component {
       welcome: { screen: WelcomePage },
       main: {
         screen: TabNavigator({
-          home: { screen: HomePage }
-        }, {
-          navigationOptions: {
-            tabBarVisible: false
+          popular: { 
+            screen: PopularPage 
+          },
+          my: {
+            screen: StackNavigator({
+              my_setting: {
+                screen: MyPage
+              },
+              my_custom_key: {
+                screen: CustomKeyPage
+              }
+            }, {
+              navigationOptions: {
+                header: null,
+                animationEnabled: true
+              }
+            })
           }
         })
       }

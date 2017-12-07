@@ -6,6 +6,7 @@ import {
     Image,
 } from 'react-native';
 import PopularPage from './PopularPage';
+import MyPage from './MyPage';
 
 export default class HomePage extends Component {
   constructor(props) {
@@ -88,7 +89,7 @@ export default class HomePage extends Component {
             }
             onPress={() => this.setState({ selectedTab: 'tb_my' })}
           >
-            <View style={{ backgroundColor: 'blue', flex: 1 }} />
+            <MyPage {...this.props} />
           </TabNavigator.Item>
         </TabNavigator>
       </View>
