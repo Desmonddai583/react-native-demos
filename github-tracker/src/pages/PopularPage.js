@@ -7,6 +7,7 @@ import {
 import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view';
 import NavigationBar from '../components/NavigationBar';
 import PopularTab from '../components/PopularTab';
+import LanguageService, { FLAG_LANGUAGE } from '../service/LanguageService';
 
 class PopularPage extends Component {
   static navigationOptions = () => ({
@@ -19,25 +20,53 @@ class PopularPage extends Component {
     )
   });
 
+  constructor(props) {
+    super(props);
+  
+    this.languageService = new LanguageService(FLAG_LANGUAGE.flag_key);
+    this.state = {
+      languages: []
+    };
+  }
+
+  componentDidMount() {
+    this.loadData();
+  }
+
+  loadData() {
+    this.languageService.fetch()
+      .then(result => {
+        this.setState({
+          languages: result
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
   render() {
+    const content = this.state.languages.length > 0 ? (
+      <ScrollableTabView
+        tabBarBackgroundColor="#2196F3"
+        tabBarInactiveTextColor="mintcream"
+        tabBarActiveTextColor="white"
+        tabBarUnderlineStyle={{ backgroundColor: '#e7e7e7', height: 2 }}
+        renderTabBar={() => <ScrollableTabBar />}
+      >
+        {this.state.languages.map((result, i, arr) => {
+          const lan = arr[i];
+          return lan.checked ? <PopularTab key={i} tabLabel={lan.name} /> : null;
+        })}
+      </ScrollableTabView>
+    ) : null;
     return (
       <View style={styles.container}>
         <NavigationBar 
           title='最热'
           statusBar={{ backgroundColor: '#2196F3' }}
         />
-        <ScrollableTabView
-          tabBarBackgroundColor="#2196F3"
-          tabBarInactiveTextColor="mintcream"
-          tabBarActiveTextColor="white"
-          tabBarUnderlineStyle={{ backgroundColor: '#e7e7e7', height: 2 }}
-          renderTabBar={() => <ScrollableTabBar />}
-        >
-          <PopularTab tabLabel="Jave">JAVA</PopularTab>
-          <PopularTab tabLabel="IOS">IOS</PopularTab>
-          <PopularTab tabLabel="Android">Android</PopularTab>
-          <PopularTab tabLabel="JavaScript">JavaScript</PopularTab>
-        </ScrollableTabView>
+        {content}
       </View>
     );
   }
