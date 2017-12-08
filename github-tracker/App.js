@@ -11,7 +11,7 @@ import CustomKeyPage from './src/pages/MyPage/CustomKeyPage';
 
 export default class App extends React.Component {
   render() {
-    const MainNavigator = TabNavigator({
+    const MainNavigator = StackNavigator({
       welcome: { screen: WelcomePage },
       main: {
         screen: TabNavigator({
@@ -24,12 +24,14 @@ export default class App extends React.Component {
                 screen: MyPage
               },
               my_custom_key: {
-                screen: CustomKeyPage
+                screen: CustomKeyPage,
+                navigationOptions: { 
+                  tabBarVisible: false 
+                }
               }
             }, {
               navigationOptions: {
-                header: null,
-                animationEnabled: true
+                header: null
               }
             })
           }
@@ -37,7 +39,7 @@ export default class App extends React.Component {
       }
     }, {
       navigationOptions: {
-        tabBarVisible: false
+        header: null
       },
       lazy: true
     });

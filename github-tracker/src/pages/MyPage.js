@@ -2,11 +2,22 @@ import React, { Component } from 'react';
 import { 
   View,
   StyleSheet,
-  Text
+  Text,
+  Image
 } from 'react-native';
 import NavigationBar from '../components/NavigationBar';
 
 class MyPage extends Component {
+  static navigationOptions = () => ({
+    title: '我的',
+    tabBarIcon: ({ tintColor }) => (
+      <Image 
+        style={{ tintColor, height: 22, width: 22 }} 
+        source={require('../../res/images/ic_my.png')} 
+      />
+    )
+  });
+  
   render() {
     return (
       <View style={styles.container}>
