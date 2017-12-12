@@ -8,6 +8,7 @@ import WelcomePage from './src/pages/WelcomePage';
 import PopularPage from './src/pages/PopularPage';
 import MyPage from './src/pages/MyPage';
 import CustomKeyPage from './src/pages/MyPage/CustomKeyPage';
+import SortKeyPage from './src/pages/MyPage/SortKeyPage';
 
 export default class App extends React.Component {
   render() {
@@ -25,6 +26,12 @@ export default class App extends React.Component {
               },
               my_custom_key: {
                 screen: CustomKeyPage,
+                navigationOptions: { 
+                  tabBarVisible: false 
+                }
+              },
+              my_sort_key: {
+                screen: SortKeyPage,
                 navigationOptions: { 
                   tabBarVisible: false 
                 }

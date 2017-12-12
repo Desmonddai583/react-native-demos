@@ -33,6 +33,14 @@ class MyPage extends Component {
             })
           }
         >自定义标签</Text>
+        <Text 
+          style={styles.tips}
+          onPress={() =>
+            this.props.navigation.navigate('my_sort_key', { 
+              ...this.props
+            })
+          }
+        >标签排序</Text>
       </View>
     );
   }
