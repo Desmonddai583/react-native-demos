@@ -8,7 +8,7 @@ import NavigationBar from '../components/NavigationBar';
 class WelcomePage extends Component {
   componentDidMount() {
     this.timer = setTimeout(() => {
-      this.props.navigation.navigate('popular');
+      this.props.navigation.navigate('popular_main');
     }, 2000);
   }
 

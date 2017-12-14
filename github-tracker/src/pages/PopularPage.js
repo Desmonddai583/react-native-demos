@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { 
   View,
   StyleSheet,
-  Image
+  Image,
+  DeviceEventEmitter
 } from 'react-native';
+import Toast, { DURATION } from 'react-native-easy-toast';
 import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view';
 import NavigationBar from '../components/NavigationBar';
 import PopularTab from '../components/PopularTab';
@@ -30,7 +32,16 @@ class PopularPage extends Component {
   }
 
   componentDidMount() {
+    this.listener = DeviceEventEmitter.addListener('showToast', (text) => {
+      this.refs.toast.show(text, DURATION.LENGTH_LONG);
+    });
     this.loadData();
+  }
+
+  componentWillUnmount() {
+    if (this.listener) {
+      this.listener.remove();
+    }
   }
 
   loadData() {
@@ -56,7 +67,7 @@ class PopularPage extends Component {
       >
         {this.state.languages.map((result, i, arr) => {
           const lan = arr[i];
-          return lan.checked ? <PopularTab key={i} tabLabel={lan.name} /> : null;
+          return lan.checked ? <PopularTab key={i} tabLabel={lan.name} {...this.props} /> : null;
         })}
       </ScrollableTabView>
     ) : null;
@@ -67,6 +78,7 @@ class PopularPage extends Component {
           statusBar={{ backgroundColor: '#2196F3' }}
         />
         {content}
+        <Toast ref="toast" />
       </View>
     );
   }

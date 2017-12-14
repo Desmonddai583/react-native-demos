@@ -41,6 +41,15 @@ class MyPage extends Component {
             })
           }
         >标签排序</Text>
+        <Text 
+          style={styles.tips}
+          onPress={() =>
+            this.props.navigation.navigate('my_custom_key', { 
+              ...this.props,
+              isRemoveKey: true
+            })
+          }
+        >标签移除</Text>
       </View>
     );
   }

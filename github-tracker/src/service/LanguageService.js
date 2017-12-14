@@ -36,9 +36,7 @@ class LanguageService {
   }
 
   save(data) {
-    AsyncStorage.setItem(this.flag, JSON.stringify(data), (error, result) => {
-      
-    });
+    AsyncStorage.setItem(this.flag, JSON.stringify(data), () => {});
   }
 }
 

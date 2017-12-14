@@ -36,4 +36,11 @@ export default class ArrayUtils {
     }
     return true;
   }
+
+  static remove(arr, item) {
+    if (!arr) return;
+    for (let i = 0, l = arr.length; i < l; i++) {
+      if (item === arr[i]) arr.splice(i, 1);
+    }
+  }
 }

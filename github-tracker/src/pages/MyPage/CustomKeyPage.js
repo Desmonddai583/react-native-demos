@@ -20,6 +20,7 @@ class CustomKeyPage extends Component {
   
     this.languageService = new LanguageService(FLAG_LANGUAGE.flag_key);
     this.changeValues = [];
+    this.isRemoveKey = this.props.navigation.state.params.isRemoveKey;
     this.state = {
       tags: []
     };
@@ -31,6 +32,11 @@ class CustomKeyPage extends Component {
 
   onSave() {
     if (this.changeValues.length !== 0) {
+      if (this.isRemoveKey) {
+        for (let i = 0, l = this.changeValues.length; i < l; i++) {
+          ArrayUtils.remove(this.state.tags, this.changeValues[i]);
+        }
+      }
       this.languageService.save(this.state.tags);
     }
     this.props.navigation.goBack();
@@ -74,7 +80,9 @@ class CustomKeyPage extends Component {
 
   toggleTag(data) {
     const tempData = data;
-    tempData.checked = !data.checked;
+    if (!this.isRemoveKey) {
+      tempData.checked = !data.checked;
+    }
     ArrayUtils.updateArray(this.changeValues, tempData);
   }
 
@@ -107,6 +115,7 @@ class CustomKeyPage extends Component {
 
   renderCheckBox(data) {
     const leftText = data.name;
+    const isChecked = this.isRemoveKey ? false : data.checked;
 
     return (
       <CheckBox
@@ -116,7 +125,7 @@ class CustomKeyPage extends Component {
         }}
         onClick={() => this.toggleTag(data)}
         leftText={leftText}
-        isChecked={data.checked}
+        isChecked={isChecked}
         checkedImage={
           <Image 
             style={{ tintColor: '#6495ED' }}
@@ -134,12 +143,14 @@ class CustomKeyPage extends Component {
   }
 
   render() {
+    const title = this.isRemoveKey ? '标签移除' : '自定义标签';
+    const rightButtonTitle = this.isRemoveKey ? '移除' : '保存';
     const rightButton = (
       <TouchableOpacity
         onPress={() => this.onSave()}
       >
         <View style={{ margin: 10 }}>
-          <Text style={styles.title}>保存</Text>
+          <Text style={styles.title}>{rightButtonTitle}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -147,7 +158,7 @@ class CustomKeyPage extends Component {
     return (
       <View style={styles.container}>
         <NavigationBar
-          title='自定义标签'
+          title={title}
           style={{ backgroundColor: '#6495ED' }}
           leftButton={ViewUtils.getLeftButton(() => this.onBack())}
           rightButton={rightButton}
