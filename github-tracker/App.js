@@ -6,6 +6,7 @@ import {
 import { TabNavigator, StackNavigator } from 'react-navigation';
 import WelcomePage from './src/pages/WelcomePage';
 import PopularPage from './src/pages/PopularPage';
+import TrendingPage from './src/pages/TrendingPage';
 import MyPage from './src/pages/MyPage';
 import RepositoryDetailPage from './src/pages/PopularPage/RepositoryDetailPage';
 import CustomKeyPage from './src/pages/MyPage/CustomKeyPage';
@@ -23,13 +24,19 @@ export default class App extends React.Component {
                 screen: PopularPage
               },
               popular_detail: {
-                screen: RepositoryDetailPage
+                screen: RepositoryDetailPage,
+                navigationOptions: { 
+                  tabBarVisible: false 
+                }
               }
             }, {
               navigationOptions: {
                 header: null
               }
             })  
+          },
+          trend: {
+            screen: TrendingPage
           },
           my: {
             screen: StackNavigator({

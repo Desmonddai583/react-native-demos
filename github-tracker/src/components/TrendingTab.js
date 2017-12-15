@@ -8,13 +8,13 @@ import {
 import DataRepository, { FLAG_STORAGE } from '../service/DataRepository';
 import RepositoryCell from '../components/RepositoryCell';
 
-const URL = 'https://api.github.com/search/repositories?q=';
+const API_URL = 'https://github.com/trending/';
 const QUERY_STR = '&sort=stars';
 
-class PopularTab extends Component {
+class TrendingTab extends Component {
   constructor(props) {
     super(props);
-    this.dataRepository = new DataRepository(FLAG_STORAGE.flag_popular);
+    this.dataRepository = new DataRepository(FLAG_STORAGE.flag_trending);
     const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
       dataSource: ds,
@@ -37,7 +37,7 @@ class PopularTab extends Component {
     this.setState({
       isLoading: true
     });
-    const url = this.genURL(this.props.tabLabel);
+    const url = this.genURL('?since=daily', this.props.tabLabel);
     this.dataRepository
       .fetchRepository(url)
       .then(result => {
@@ -69,8 +69,8 @@ class PopularTab extends Component {
       });
   }
 
-  genURL(key) {
-    return URL + key + QUERY_STR;
+  genURL(timeSpan, category) {
+    return API_URL + category + timeSpan.searchText;
   }
 
   renderRow = rowData => (
@@ -102,4 +102,4 @@ class PopularTab extends Component {
   }
 }
 
-export default PopularTab;
+export default TrendingTab;

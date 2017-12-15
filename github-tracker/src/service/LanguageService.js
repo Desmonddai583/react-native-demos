@@ -2,6 +2,7 @@ import {
   AsyncStorage
 } from 'react-native';
 import keys from '../../res/data/keys.json';
+import langs from '../../res/data/langs.json';
 
 export const FLAG_LANGUAGE = {
   flag_language: 'flag_language_language',
@@ -27,7 +28,7 @@ class LanguageService {
             reject(e);
           }
         } else {
-          const data = this.flag === FLAG_LANGUAGE.flag_key ? keys : null;
+          const data = this.flag === FLAG_LANGUAGE.flag_key ? keys : langs;
           this.save(data);
           resolve(data);
         }

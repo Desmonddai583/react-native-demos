@@ -1,23 +1,22 @@
 import React, { Component } from 'react';
 import { 
   View,
-  Text,
-  TextInput,
   StyleSheet,
-  WebView,
-  DeviceEventEmitter
+  WebView
 } from 'react-native';
 import NavigationBar from '../../components/NavigationBar';
-
-const URL = 'http://www.imooc.com';
+import ViewUtils from '../../utils/ViewUtils';
 
 class RepositoryDetailPage extends Component {
   constructor(props) {
     super(props);
   
+    const item = this.props.navigation.state.params.item;
+    this.url = item.html_url;
+    const title = item.full_name;
     this.state = {
-      url: URL,
-      title: '',
+      url: this.url,
+      title,
       canGoBack: false
     };
   }
@@ -25,15 +24,15 @@ class RepositoryDetailPage extends Component {
   onNavigationStateChange(e) {
     this.setState({
       canGoBack: e.canGoBack,
-      title: e.title
+      url: e.url
     });
   }
 
-  goBack() {
+  onBack() {
     if (this.state.canGoBack) {
-      this.ref.webview.goBack();
+      this.refs.webview.goBack();
     } else {
-      DeviceEventEmitter.emit('showToast', '到顶了');
+      this.props.navigation.goBack();
     }
   }
 
@@ -47,32 +46,15 @@ class RepositoryDetailPage extends Component {
     return (
       <View style={styles.container}>
         <NavigationBar
-          title='我的'
+          title={this.state.title}
           style={{ backgroundColor: '#6495ED' }}
+          leftButton={ViewUtils.getLeftButton(() => this.onBack())}
         />
-        <View style={styles.row}>
-          <Text 
-            style={styles.tips}
-            onPress={() => {
-              this.goBack();
-            }}
-          />
-          <TextInput 
-            style={styles.input}
-            defaultValue={URL}
-            onChangeText={text => this.text = text}
-          />
-          <Text 
-            style={styles.tips}
-            onPress={() => {
-              this.go();
-            }}
-          />
-        </View>
         <WebView 
           ref="webview"
           source={{ uri: this.state.url }}
           onNavigationStateChange={(e) => this.onNavigationStateChange(e)}
+          startInLoadingState
         />
       </View>
     );
@@ -82,20 +64,6 @@ class RepositoryDetailPage extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1
-  },
-  tips: {
-    fontSize: 20
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    margin: 10
-  },
-  input: {
-    height: 40,
-    flex: 1,
-    borderWidth: 1,
-    margin: 2
   }
 });
 
