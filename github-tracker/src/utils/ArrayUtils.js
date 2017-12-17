@@ -43,4 +43,13 @@ export default class ArrayUtils {
       if (item === arr[i]) arr.splice(i, 1);
     }
   }
+
+  static checkExist(item, items) {
+    for (let i = 0, len = items.length; i < len; i++) {
+      if (item.id.toString() === items[i]) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

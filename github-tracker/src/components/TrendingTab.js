@@ -6,10 +6,9 @@ import {
   DeviceEventEmitter
 } from 'react-native';
 import DataRepository, { FLAG_STORAGE } from '../service/DataRepository';
-import RepositoryCell from '../components/RepositoryCell';
+import TrendingCell from '../components/TrendingCell';
 
 const API_URL = 'https://github.com/trending/';
-const QUERY_STR = '&sort=stars';
 
 class TrendingTab extends Component {
   constructor(props) {
@@ -23,21 +22,31 @@ class TrendingTab extends Component {
   }
 
   componentDidMount() {
-    this.loadData();
+    this.loadData(this.props.timeSpan, true);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.timeSpan !== this.props.timeSpan) {
+      this.loadData(nextProps.timeSpan);
+    } 
+  }
+
+  onRefresh() {
+    this.loadData(this.props.timeSpan);
   }
 
   onSelect(item) {
-    this.props.navigation.navigate('popular_detail', {
+    this.props.navigation.navigate('trend_detail', {
       item,
       ...this.props
     });
   }
 
-  loadData() {
+  loadData(timeSpan) {
     this.setState({
       isLoading: true
     });
-    const url = this.genURL('?since=daily', this.props.tabLabel);
+    const url = this.genURL(timeSpan, this.props.tabLabel);
     this.dataRepository
       .fetchRepository(url)
       .then(result => {
@@ -70,11 +79,11 @@ class TrendingTab extends Component {
   }
 
   genURL(timeSpan, category) {
-    return API_URL + category + timeSpan.searchText;
+    return `${API_URL}${category}?${timeSpan.searchText}`;
   }
 
   renderRow = rowData => (
-    <RepositoryCell 
+    <TrendingCell 
       data={rowData}
       onSelect={() => this.onSelect(rowData)}
     />
@@ -89,7 +98,7 @@ class TrendingTab extends Component {
           refreshControl={
             <RefreshControl 
               refreshing={this.state.isLoading}
-              onRefresh={() => this.loadData()}
+              onRefresh={() => this.onRefresh()}
               colors={['#2196F3']}
               tintColor={'#2196F3'}
               title={'Loading...'}

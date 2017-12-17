@@ -35,8 +35,22 @@ export default class App extends React.Component {
               }
             })  
           },
-          trend: {
-            screen: TrendingPage
+          trend: { 
+            screen: StackNavigator({
+              trend_main: {
+                screen: TrendingPage
+              },
+              trend_detail: {
+                screen: RepositoryDetailPage,
+                navigationOptions: { 
+                  tabBarVisible: false 
+                }
+              }
+            }, {
+              navigationOptions: {
+                header: null
+              }
+            })  
           },
           my: {
             screen: StackNavigator({

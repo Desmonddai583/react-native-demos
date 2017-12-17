@@ -26,7 +26,7 @@ class SortKeyPage extends Component {
   }
 
   componentDidMount() {
-    this.languageService = new LanguageService(FLAG_LANGUAGE.flag_key);
+    this.languageService = new LanguageService(this.props.navigation.state.params.flag);
     this.loadData();
   }
 
@@ -109,11 +109,13 @@ class SortKeyPage extends Component {
       </TouchableOpacity>
     );
 
+    const title = this.props.navigation.state.params.flag === FLAG_LANGUAGE ? '语言排序' : '标签排序';
+
     return (
       <View style={styles.container}>
         <NavigationBar
-          title='我的'
-          style={{ backgroundColor: '#6495ED' }}
+          title={title}
+          style={{ backgroundColor: '#2196F3' }}
           leftButton={ViewUtils.getLeftButton(() => this.onBack())}
           rightButton={rightButton}
         />

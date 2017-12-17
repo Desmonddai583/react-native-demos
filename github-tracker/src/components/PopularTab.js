@@ -6,10 +6,14 @@ import {
   DeviceEventEmitter
 } from 'react-native';
 import DataRepository, { FLAG_STORAGE } from '../service/DataRepository';
+import FavoriteService from '../service/FavoriteService';
 import RepositoryCell from '../components/RepositoryCell';
+import ProjectModel from '../model/ProjectModel';
+import ArrayUtils from '../utils/ArrayUtils';
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
+const favoriteService = new FavoriteService(FLAG_STORAGE.flag_popular);
 
 class PopularTab extends Component {
   constructor(props) {
@@ -18,7 +22,8 @@ class PopularTab extends Component {
     const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
       dataSource: ds,
-      isLoading: false
+      isLoading: false,
+      favoriteKeys: []
     };
   }
 
@@ -26,14 +31,58 @@ class PopularTab extends Component {
     this.loadData();
   }
 
-  onSelect(item) {
+  onSelect(projectModel) {
     this.props.navigation.navigate('popular_detail', {
-      item,
+      projectModel,
       ...this.props
     });
   }
 
-  loadData() {
+  onFavorite(item, isFavorite) {
+    if (isFavorite) {
+      favoriteService.saveFavoriteItem(item.id.toString(), JSON.stringify(item));
+    } else {
+      favoriteService.removeFavoriteItem(item.id.toString());
+    }
+  }
+
+  getDataSource = (data) => this.state.dataSource.cloneWithRows(data);
+
+  getFavoriteKeys = () => {
+    favoriteService.getFavoriteKeys()
+      .then(keys => {
+        if (keys) {
+          this.updateState({
+            favoriteKeys: keys
+          });  
+        }
+        this.flushFavoriteState();
+      })
+      .catch(() => {
+        this.flushFavoriteState();
+      });
+  }
+
+  flushFavoriteState = () => {
+    const projectModels = [];
+    const items = this.items;
+    for (let i = 0, len = items.length; i < len; i++) {
+      projectModels.push(
+        new ProjectModel(items[i], ArrayUtils.checkExist(items[i], this.state.favoriteKeys))
+      );
+    }
+    this.updateState({
+      isLoading: false,
+      dataSource: this.getDataSource(projectModels)
+    });
+  }
+
+  updateState = (dict) => {
+    if (!this) return;
+    this.setState(dict);
+  }
+
+  loadData = () => {
     this.setState({
       isLoading: true
     });
@@ -41,16 +90,12 @@ class PopularTab extends Component {
     this.dataRepository
       .fetchRepository(url)
       .then(result => {
-        let items;
         if (result && result.items) {
-          items = result.items;
+          this.items = result.items;
         } else {
-          items = result || [];
+          this.items = result || [];
         }
-        this.setState({
-          isLoading: false,
-          dataSource: this.state.dataSource.cloneWithRows(items)
-        });
+        this.getFavoriteKeys();
         if (result && result.update_date && !this.dataRepository.checkDate(result.update_date)) {
           DeviceEventEmitter.emit('showToast', '数据过时');
           return this.dataRepository.fetchNetRepository(url);
@@ -59,24 +104,27 @@ class PopularTab extends Component {
       })
       .then(items => {
         if (!items || items.length === 0) return;
-        this.setState({
-          dataSource: this.state.dataSource.cloneWithRows(items)
-        });
+        this.items = items;
+        this.getFavoriteKeys();
         DeviceEventEmitter.emit('showToast', '显示网络数据');
       })
       .catch(error => {
         console.log(error);
+        this.updateState({
+          isLoading: false
+        });
       });
   }
 
-  genURL(key) {
+  genURL = (key) => {
     return URL + key + QUERY_STR;
   }
 
-  renderRow = rowData => (
+  renderRow = (projectModel) => (
     <RepositoryCell 
-      data={rowData}
-      onSelect={() => this.onSelect(rowData)}
+      projectModel={projectModel}
+      onSelect={() => this.onSelect(projectModel)}
+      onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
     />
   );
 

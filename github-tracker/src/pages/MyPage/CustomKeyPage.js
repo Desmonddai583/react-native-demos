@@ -18,7 +18,7 @@ class CustomKeyPage extends Component {
   constructor(props) {
     super(props);
   
-    this.languageService = new LanguageService(FLAG_LANGUAGE.flag_key);
+    this.languageService = new LanguageService(this.props.navigation.state.params.flag);
     this.changeValues = [];
     this.isRemoveKey = this.props.navigation.state.params.isRemoveKey;
     this.state = {
@@ -128,13 +128,13 @@ class CustomKeyPage extends Component {
         isChecked={isChecked}
         checkedImage={
           <Image 
-            style={{ tintColor: '#6495ED' }}
+            style={{ tintColor: '#2196F3' }}
             source={require('../../../res/images/ic_check_box.png')} 
           />
         }
         unCheckedImage={
           <Image 
-            style={{ tintColor: '#6495ED' }}
+            style={{ tintColor: '#2196F3' }}
             source={require('../../../res/images/ic_check_box_outline_blank.png')} 
           />
         }
@@ -143,7 +143,9 @@ class CustomKeyPage extends Component {
   }
 
   render() {
-    const title = this.isRemoveKey ? '标签移除' : '自定义标签';
+    let title = this.isRemoveKey ? '标签移除' : '自定义标签';
+    title = this.props.navigation.state.params.flag === FLAG_LANGUAGE.flag_language ? 
+      '自定义语言' : title;
     const rightButtonTitle = this.isRemoveKey ? '移除' : '保存';
     const rightButton = (
       <TouchableOpacity
@@ -159,7 +161,7 @@ class CustomKeyPage extends Component {
       <View style={styles.container}>
         <NavigationBar
           title={title}
-          style={{ backgroundColor: '#6495ED' }}
+          style={{ backgroundColor: '#2196F3' }}
           leftButton={ViewUtils.getLeftButton(() => this.onBack())}
           rightButton={rightButton}
         />
