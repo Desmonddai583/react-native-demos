@@ -116,11 +116,9 @@ class PopularTab extends Component {
       });
   }
 
-  genURL = (key) => {
-    return URL + key + QUERY_STR;
-  }
+  genURL = (key) => URL + key + QUERY_STR
 
-  renderRow = (projectModel) => (
+  renderRow = projectModel => (
     <RepositoryCell 
       projectModel={projectModel}
       onSelect={() => this.onSelect(projectModel)}

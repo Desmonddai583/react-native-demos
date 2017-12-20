@@ -5,19 +5,24 @@ import {
   RefreshControl,
   DeviceEventEmitter
 } from 'react-native';
+import FavoriteService from '../service/FavoriteService';
+import ProjectModel from '../model/ProjectModel';
+import ArrayUtils from '../utils/ArrayUtils';
 import DataRepository, { FLAG_STORAGE } from '../service/DataRepository';
 import TrendingCell from '../components/TrendingCell';
 
 const API_URL = 'https://github.com/trending/';
+const favoriteService = new FavoriteService(FLAG_STORAGE.flag_popular);
+const dataRepository = new DataRepository(FLAG_STORAGE.flag_trending);
 
 class TrendingTab extends Component {
   constructor(props) {
-    super(props);
-    this.dataRepository = new DataRepository(FLAG_STORAGE.flag_trending);
+    super(props); 
     const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
       dataSource: ds,
-      isLoading: false
+      isLoading: false,
+      favoriteKeys: [],
     };
   }
 
@@ -35,11 +40,55 @@ class TrendingTab extends Component {
     this.loadData(this.props.timeSpan);
   }
 
-  onSelect(item) {
+  onSelect(projectModel) {
     this.props.navigation.navigate('trend_detail', {
-      item,
+      projectModel,
       ...this.props
     });
+  }
+
+  onFavorite(item, isFavorite) {
+    if (isFavorite) {
+      favoriteService.saveFavoriteItem(item.fullName, JSON.stringify(item));
+    } else {
+      favoriteService.removeFavoriteItem(item.fullName);
+    }
+  }
+
+  getDataSource = (data) => this.state.dataSource.cloneWithRows(data);
+
+  getFavoriteKeys = () => {
+    favoriteService.getFavoriteKeys()
+      .then(keys => {
+        if (keys) {
+          this.updateState({
+            favoriteKeys: keys
+          });  
+        }
+        this.flushFavoriteState();
+      })
+      .catch(() => {
+        this.flushFavoriteState();
+      });
+  }
+
+  flushFavoriteState = () => {
+    const projectModels = [];
+    const items = this.items;
+    for (let i = 0, len = items.length; i < len; i++) {
+      projectModels.push(
+        new ProjectModel(items[i], ArrayUtils.checkExist(items[i], this.state.favoriteKeys))
+      );
+    }
+    this.updateState({
+      isLoading: false,
+      dataSource: this.getDataSource(projectModels)
+    });
+  }
+
+  updateState = (dict) => {
+    if (!this) return;
+    this.setState(dict);
   }
 
   loadData(timeSpan) {
@@ -47,34 +96,32 @@ class TrendingTab extends Component {
       isLoading: true
     });
     const url = this.genURL(timeSpan, this.props.tabLabel);
-    this.dataRepository
+    dataRepository
       .fetchRepository(url)
       .then(result => {
-        let items;
         if (result && result.items) {
-          items = result.items;
+          this.items = result.items;
         } else {
-          items = result || [];
+          this.items = result || [];
         }
-        this.setState({
-          isLoading: false,
-          dataSource: this.state.dataSource.cloneWithRows(items)
-        });
-        if (result && result.update_date && !this.dataRepository.checkDate(result.update_date)) {
+        this.getFavoriteKeys();
+        if (result && result.update_date && !dataRepository.checkDate(result.update_date)) {
           DeviceEventEmitter.emit('showToast', '数据过时');
-          return this.dataRepository.fetchNetRepository(url);
+          return dataRepository.fetchNetRepository(url);
         }
         DeviceEventEmitter.emit('showToast', '显示缓存数据');
       })
       .then(items => {
         if (!items || items.length === 0) return;
-        this.setState({
-          dataSource: this.state.dataSource.cloneWithRows(items)
-        });
+        this.items = items;
+        this.getFavoriteKeys();
         DeviceEventEmitter.emit('showToast', '显示网络数据');
       })
       .catch(error => {
         console.log(error);
+        this.updateState({
+          isLoading: false
+        });
       });
   }
 
@@ -82,10 +129,11 @@ class TrendingTab extends Component {
     return `${API_URL}${category}?${timeSpan.searchText}`;
   }
 
-  renderRow = rowData => (
+  renderRow = projectModel => (
     <TrendingCell 
-      data={rowData}
-      onSelect={() => this.onSelect(rowData)}
+      projectModel={projectModel}
+      onSelect={() => this.onSelect(projectModel)}
+      onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
     />
   );
 

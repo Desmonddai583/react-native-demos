@@ -46,7 +46,8 @@ export default class ArrayUtils {
 
   static checkExist(item, items) {
     for (let i = 0, len = items.length; i < len; i++) {
-      if (item.id.toString() === items[i]) {
+      const id = item.id ? item.id.toString() : item.fullName;
+      if (id === items[i]) {
         return true;
       }
     }
