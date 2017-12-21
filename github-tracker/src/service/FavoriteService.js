@@ -64,6 +64,35 @@ class FavoriteService {
       });
     });
   }
+
+  getAllItems() {
+    return new Promise((resolve, reject) => {
+      this.getFavoriteKeys()
+        .then(keys => {
+          const items = [];
+          if (keys) {
+            AsyncStorage.multiGet(keys, (err, stores) => {
+              try {
+                stores.each((result, i, store) => {
+                  const value = store[i][0];
+                  if (value) {
+                    items.push(value);
+                  }
+                });
+                resolve(items);
+              } catch (e) {
+                reject(e);
+              }
+            });
+          } else {
+            resolve(items);
+          }
+        })
+        .catch(e => {
+          reject(e);
+        });
+    });
+  }
 }
 
 export default FavoriteService;

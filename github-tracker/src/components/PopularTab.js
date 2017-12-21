@@ -34,6 +34,7 @@ class PopularTab extends Component {
   onSelect(projectModel) {
     this.props.navigation.navigate('popular_detail', {
       projectModel,
+      flag: FLAG_STORAGE.flag_popular,
       ...this.props
     });
   }

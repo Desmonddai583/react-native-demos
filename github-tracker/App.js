@@ -7,6 +7,7 @@ import { TabNavigator, StackNavigator } from 'react-navigation';
 import WelcomePage from './src/pages/WelcomePage';
 import PopularPage from './src/pages/PopularPage';
 import TrendingPage from './src/pages/TrendingPage';
+import FavoritePage from './src/pages/FavoritePage';
 import MyPage from './src/pages/MyPage';
 import RepositoryDetailPage from './src/pages/PopularPage/RepositoryDetailPage';
 import CustomKeyPage from './src/pages/MyPage/CustomKeyPage';
@@ -51,6 +52,17 @@ export default class App extends React.Component {
                 header: null
               }
             })  
+          },
+          favorite: {
+            screen: StackNavigator({
+              favorite_main: {
+                screen: FavoritePage
+              }
+            }, {
+              navigationOptions: {
+                header: null
+              }
+            })
           },
           my: {
             screen: StackNavigator({

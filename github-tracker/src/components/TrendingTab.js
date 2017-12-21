@@ -12,7 +12,7 @@ import DataRepository, { FLAG_STORAGE } from '../service/DataRepository';
 import TrendingCell from '../components/TrendingCell';
 
 const API_URL = 'https://github.com/trending/';
-const favoriteService = new FavoriteService(FLAG_STORAGE.flag_popular);
+const favoriteService = new FavoriteService(FLAG_STORAGE.flag_trending);
 const dataRepository = new DataRepository(FLAG_STORAGE.flag_trending);
 
 class TrendingTab extends Component {
@@ -43,6 +43,7 @@ class TrendingTab extends Component {
   onSelect(projectModel) {
     this.props.navigation.navigate('trend_detail', {
       projectModel,
+      flag: FLAG_STORAGE.flag_trending,
       ...this.props
     });
   }

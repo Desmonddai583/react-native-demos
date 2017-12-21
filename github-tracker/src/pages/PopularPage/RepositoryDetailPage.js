@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 import { 
   View,
   StyleSheet,
-  WebView
+  WebView,
+  Image,
+  TouchableOpacity
 } from 'react-native';
 import NavigationBar from '../../components/NavigationBar';
 import ViewUtils from '../../utils/ViewUtils';
+import FavoriteService from '../../service/FavoriteService';
 
 const TRENDING_URL = 'https://github.com/';
 
@@ -16,10 +19,15 @@ class RepositoryDetailPage extends Component {
     const item = this.props.navigation.state.params.projectModel.item;
     this.url = item.html_url ? item.html_url : TRENDING_URL + item.fullName;
     const title = item.full_name ? item.full_name : item.fullName;
+    this.favoriteService = new FavoriteService(this.props.navigation.state.params.flag);
     this.state = {
       url: this.url,
       title,
-      canGoBack: false
+      canGoBack: false,
+      isFavorite: this.props.navigation.state.params.projectModel.isFavorite,
+      favoriteIcon: this.props.navigation.state.params.projectModel.isFavorite ?
+        require('../../../res/images/ic_star.png') :
+        require('../../../res/images/ic_star_navbar.png')
     };
   }
 
@@ -38,10 +46,44 @@ class RepositoryDetailPage extends Component {
     }
   }
 
+  onRightButtonClick() {
+    const projectModel = this.props.navigation.state.params.projectModel;
+    this.setFavoriteState(!projectModel.isFavorite);
+    const key = projectModel.item.full_name ? 
+      projectModel.item.id.toString() : projectModel.item.fullName;
+    if (!projectModel.isFavorite) {
+      this.favoriteService.saveFavoriteItem(key, JSON.stringify(projectModel.item));
+    } else {
+      this.favoriteService.removeFavoriteItem(key);
+    }
+  }
+
+  setFavoriteState(isFavorite) {
+    this.setState({
+      isFavorite,
+      favoriteIcon: isFavorite ? 
+        require('../../../res/images/ic_star.png') : 
+        require('../../../res/images/ic_star_navbar.png')
+    });
+  }
+
   go() {
     this.setState({
       url: this.text
     });
+  }
+
+  renderRightButton() {
+    return (
+      <TouchableOpacity
+        onPress={() => this.onRightButtonClick()}
+      >
+        <Image 
+          source={this.state.favoriteIcon}
+          style={{ width: 20, height: 20, marginRight: 10 }}
+        />
+      </TouchableOpacity>
+    );
   }
 
   render() {
@@ -51,6 +93,7 @@ class RepositoryDetailPage extends Component {
           title={this.state.title}
           style={{ backgroundColor: '#2196F3' }}
           leftButton={ViewUtils.getLeftButton(() => this.onBack())}
+          rightButton={this.renderRightButton()}
         />
         <WebView 
           ref="webview"
