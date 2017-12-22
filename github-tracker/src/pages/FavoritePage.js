@@ -43,7 +43,7 @@ class FavoritePage extends Component {
     return (
       <View style={styles.container}>
         <NavigationBar 
-          title='最热'
+          title='收藏'
           statusBar={{ backgroundColor: '#2196F3' }}
         />
         {content}

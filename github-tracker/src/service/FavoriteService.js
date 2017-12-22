@@ -73,10 +73,10 @@ class FavoriteService {
           if (keys) {
             AsyncStorage.multiGet(keys, (err, stores) => {
               try {
-                stores.each((result, i, store) => {
-                  const value = store[i][0];
+                stores.forEach((result, i, store) => {
+                  const value = store[i][1];
                   if (value) {
-                    items.push(value);
+                    items.push(JSON.parse(value));
                   }
                 });
                 resolve(items);
