@@ -35,8 +35,13 @@ class PopularTab extends Component {
     this.props.navigation.navigate('popular_detail', {
       projectModel,
       flag: FLAG_STORAGE.flag_popular,
+      onUpdate: this.onUpdate,
       ...this.props
     });
+  }
+
+  onUpdate = () => {
+    this.loadData();
   }
 
   onFavorite(item, isFavorite) {
@@ -120,7 +125,7 @@ class PopularTab extends Component {
   genURL = (key) => URL + key + QUERY_STR
 
   renderRow = projectModel => (
-    <RepositoryCell 
+    <RepositoryCell
       projectModel={projectModel}
       onSelect={() => this.onSelect(projectModel)}
       onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
@@ -133,6 +138,7 @@ class PopularTab extends Component {
         <ListView 
           dataSource={this.state.dataSource}
           renderRow={this.renderRow}
+          removeClippedSubviews={false}
           refreshControl={
             <RefreshControl 
               refreshing={this.state.isLoading}

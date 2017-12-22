@@ -40,10 +40,15 @@ class TrendingTab extends Component {
     this.loadData(this.props.timeSpan);
   }
 
+  onUpdate = () => {
+    this.loadData(this.props.timeSpan);
+  }
+
   onSelect(projectModel) {
     this.props.navigation.navigate('trend_detail', {
       projectModel,
       flag: FLAG_STORAGE.flag_trending,
+      onUpdate: this.onUpdate,
       ...this.props
     });
   }
@@ -143,6 +148,7 @@ class TrendingTab extends Component {
       <View style={{ flex: 1 }}>
         <ListView 
           dataSource={this.state.dataSource}
+          removeClippedSubviews={false}
           renderRow={this.renderRow}
           refreshControl={
             <RefreshControl 

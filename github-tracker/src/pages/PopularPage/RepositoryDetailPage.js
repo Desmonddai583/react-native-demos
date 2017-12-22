@@ -42,6 +42,9 @@ class RepositoryDetailPage extends Component {
     if (this.state.canGoBack) {
       this.refs.webview.goBack();
     } else {
+      if (this.props.navigation.state.params.onUpdate) {
+        this.props.navigation.state.params.onUpdate();
+      }
       this.props.navigation.goBack();
     }
   }

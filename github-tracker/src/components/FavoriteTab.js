@@ -4,7 +4,7 @@ import {
   ListView,
   RefreshControl
 } from 'react-native';
-import DataRepository, { FLAG_STORAGE } from '../service/DataRepository';
+import { FLAG_STORAGE } from '../service/DataRepository';
 import FavoriteService from '../service/FavoriteService';
 import RepositoryCell from '../components/RepositoryCell';
 import TrendingCell from '../components/TrendingCell';
@@ -14,17 +14,28 @@ class FavoriteTab extends Component {
   constructor(props) {
     super(props);
     this.favoriteService = new FavoriteService(this.props.flag);
-    this.dataRepository = new DataRepository(FLAG_STORAGE.flag_popular);
     const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
       dataSource: ds,
-      isLoading: false,
-      favoriteKeys: []
+      isLoading: false
     };
   }
 
   componentDidMount() {
     this.loadData();
+  }
+
+  onUpdate = () => {
+    this.loadData();
+  }
+
+  onSelect(projectModel) {
+    this.props.navigation.navigate('favorite_detail', {
+      projectModel,
+      flag: this.props.flag,
+      onUpdate: this.onUpdate,
+      ...this.props
+    });
   }
 
   onFavorite(item, isFavorite) {
@@ -69,11 +80,7 @@ class FavoriteTab extends Component {
     const CellComponent = this.props.flag === FLAG_STORAGE.flag_popular ?
       RepositoryCell : TrendingCell;
     return (
-      <CellComponent 
-        key={
-          this.props.flag === FLAG_STORAGE.flag_popular ?
-            projectModel.item.id : projectModel.item.fullName
-        }
+      <CellComponent
         projectModel={projectModel}
         onSelect={() => this.onSelect(projectModel)}
         onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
@@ -84,9 +91,10 @@ class FavoriteTab extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <ListView 
+        <ListView
           dataSource={this.state.dataSource}
           renderRow={this.renderRow}
+          removeClippedSubviews={false}
           enableEmptySections
           refreshControl={
             <RefreshControl 
@@ -94,7 +102,7 @@ class FavoriteTab extends Component {
               onRefresh={() => this.loadData()}
               colors={['#2196F3']}
               tintColor={'#2196F3'}
-              title={'Loading...'}
+              title='Loading...'
               titleColor={'#2196F3'}
             />
           }

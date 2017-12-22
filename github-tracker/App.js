@@ -57,6 +57,12 @@ export default class App extends React.Component {
             screen: StackNavigator({
               favorite_main: {
                 screen: FavoritePage
+              },
+              favorite_detail: {
+                screen: RepositoryDetailPage,
+                navigationOptions: { 
+                  tabBarVisible: false 
+                }
               }
             }, {
               navigationOptions: {
@@ -87,6 +93,8 @@ export default class App extends React.Component {
               }
             })
           }
+        }, {
+          lazy: true
         })
       }
     }, {
