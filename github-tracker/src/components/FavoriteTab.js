@@ -27,6 +27,15 @@ class FavoriteTab extends Component {
     this.loadData();
   }
 
+  onFavorite(item, isFavorite) {
+    const key = this.props.flag === FLAG_STORAGE.flag_popular ? item.id.toString() : item.fullName;
+    if (isFavorite) {
+      this.favoriteService.saveFavoriteItem(key, JSON.stringify(item));
+    } else {
+      this.favoriteService.removeFavoriteItem(key);
+    }
+  }
+
   getDataSource = (data) => this.state.dataSource.cloneWithRows(data);
 
   updateState = (dict) => {
