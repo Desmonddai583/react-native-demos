@@ -28,6 +28,9 @@ class TrendingTab extends Component {
 
   componentDidMount() {
     this.loadData(this.props.timeSpan, true);
+    this.listener = DeviceEventEmitter.addListener('favoriteChanged_trending', () => {
+      this.loadData(this.props.timeSpan, true);
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -36,12 +39,18 @@ class TrendingTab extends Component {
     } 
   }
 
+  componentWillUnmount() {
+    if (this.listener) {
+      this.listener.remove();
+    }
+  }
+
   onRefresh() {
     this.loadData(this.props.timeSpan);
   }
 
   onUpdate = () => {
-    this.loadData(this.props.timeSpan);
+    this.loadData(this.props.timeSpan, true);
   }
 
   onSelect(projectModel) {
@@ -97,10 +106,12 @@ class TrendingTab extends Component {
     this.setState(dict);
   }
 
-  loadData(timeSpan) {
-    this.setState({
-      isLoading: true
-    });
+  loadData = (timeSpan, hideLoading) => {
+    if (!hideLoading) {
+      this.setState({
+        isLoading: true
+      });
+    }
     const url = this.genURL(timeSpan, this.props.tabLabel);
     dataRepository
       .fetchRepository(url)

@@ -29,6 +29,15 @@ class PopularTab extends Component {
 
   componentDidMount() {
     this.loadData();
+    this.listener = DeviceEventEmitter.addListener('favoriteChanged_popular', () => {
+      this.loadData(true);
+    });
+  }
+
+  componentWillUnmount() {
+    if (this.listener) {
+      this.listener.remove();
+    }
   }
 
   onSelect(projectModel) {
@@ -41,7 +50,7 @@ class PopularTab extends Component {
   }
 
   onUpdate = () => {
-    this.loadData();
+    this.loadData(true);
   }
 
   onFavorite(item, isFavorite) {
@@ -88,10 +97,12 @@ class PopularTab extends Component {
     this.setState(dict);
   }
 
-  loadData = () => {
-    this.setState({
-      isLoading: true
-    });
+  loadData = (hideLoading) => {
+    if (!hideLoading) {
+      this.setState({
+        isLoading: true
+      });
+    }
     const url = this.genURL(this.props.tabLabel);
     this.dataRepository
       .fetchRepository(url)

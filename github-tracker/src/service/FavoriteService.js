@@ -15,23 +15,23 @@ class FavoriteService {
     this.favoriteKey = FAVORITE_KEY_PREFIX + flag;
   }
 
-  saveFavoriteItem(key, value) {
+  saveFavoriteItem(key, value, callback) {
     AsyncStorage.setItem(key, value, (error) => {
       if (!error) {
-        this.updateFavoriteKeys(key, true);
+        this.updateFavoriteKeys(key, true, callback);
       }
     });
   }
 
-  removeFavoriteItem(key) {
+  removeFavoriteItem(key, callback) {
     AsyncStorage.removeItem(key, (error) => {
       if (!error) {
-        this.updateFavoriteKeys(key, false);
+        this.updateFavoriteKeys(key, false, callback);
       }
     });
   }
 
-  updateFavoriteKeys(key, isAdd) {
+  updateFavoriteKeys(key, isAdd, callback) {
     AsyncStorage.getItem(this.favoriteKey, (error, result) => {
       if (!error) {
         let favoriteKeys = [];
@@ -44,7 +44,11 @@ class FavoriteService {
         } else if (index !== -1) {
           favoriteKeys.splice(index, 1);
         }
-        AsyncStorage.setItem(this.favoriteKey, JSON.stringify(favoriteKeys));
+        AsyncStorage.setItem(this.favoriteKey, JSON.stringify(favoriteKeys), (err) => {
+          if (!err && callback) {
+            callback(key);
+          }
+        });
       }
     });
   }

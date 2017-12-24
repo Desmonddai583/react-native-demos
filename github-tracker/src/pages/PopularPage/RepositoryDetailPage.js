@@ -42,19 +42,19 @@ class RepositoryDetailPage extends Component {
     if (this.state.canGoBack) {
       this.refs.webview.goBack();
     } else {
+      this.props.navigation.goBack();
       if (this.props.navigation.state.params.onUpdate) {
         this.props.navigation.state.params.onUpdate();
       }
-      this.props.navigation.goBack();
     }
   }
 
   onRightButtonClick() {
     const projectModel = this.props.navigation.state.params.projectModel;
-    this.setFavoriteState(!projectModel.isFavorite);
+    this.setFavoriteState(projectModel.isFavorite = !projectModel.isFavorite);
     const key = projectModel.item.full_name ? 
       projectModel.item.id.toString() : projectModel.item.fullName;
-    if (!projectModel.isFavorite) {
+    if (projectModel.isFavorite) {
       this.favoriteService.saveFavoriteItem(key, JSON.stringify(projectModel.item));
     } else {
       this.favoriteService.removeFavoriteItem(key);
