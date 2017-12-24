@@ -109,7 +109,8 @@ class SortKeyPage extends Component {
       </TouchableOpacity>
     );
 
-    const title = this.props.navigation.state.params.flag === FLAG_LANGUAGE ? '语言排序' : '标签排序';
+    const title = this.props.navigation.state.params.flag === FLAG_LANGUAGE.flag_language ? 
+      '语言排序' : '标签排序';
 
     return (
       <View style={styles.container}>
