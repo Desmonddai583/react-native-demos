@@ -4,7 +4,11 @@ import {
 import GitHubTrending from 'GitHubTrending';
 import HttpUtils from '../utils/HttpUtils';
 
-export const FLAG_STORAGE = { flag_popular: 'popular', flag_trending: 'trending' };
+export const FLAG_STORAGE = { 
+  flag_popular: 'popular', 
+  flag_trending: 'trending',
+  flag_my: 'my'
+};
 
 class DataRepository {
   constructor(flag) {
@@ -77,8 +81,13 @@ class DataRepository {
               reject(new Error('responseData is null'));
               return;
             }
-            resolve(result.items);
-            this.saveRepository(url, result.items);
+            if (this.flag === FLAG_STORAGE.flag_my) {
+              this.saveRepository(url, result);
+              resolve(result);
+            } else {
+              this.saveRepository(url, result.items);
+              resolve(result.items);
+            }
           })
           .catch(e => {
             reject(e);
@@ -89,7 +98,12 @@ class DataRepository {
 
   saveRepository(url, items, callBack) {
     if (!url || !items) return;
-    const wrapData = { items, update_date: new Date().getTime() };
+    let wrapData;
+    if (this.flag === FLAG_STORAGE.flag_my) {
+      wrapData = { item: items, update_date: new Date().getTime() };
+    } else {
+      wrapData = { items, update_date: new Date().getTime() };
+    }
     AsyncStorage.setItem(url, JSON.stringify(wrapData), callBack);
   }
 

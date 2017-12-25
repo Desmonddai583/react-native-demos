@@ -6,5 +6,7 @@ export const MORE_MENU = {
   REMOVE_KEY: 'Remove Key',
   ABOUT_AUTHOR: 'About Author',
   ABOUT: 'About',
-  CUSTOM_THEME: 'Custom Theme'
+  CUSTOM_THEME: 'Custom Theme',
+  WEBSITE: 'Website',
+  FEEDBACK: 'Feedback'
 };

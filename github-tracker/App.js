@@ -12,6 +12,8 @@ import MyPage from './src/pages/MyPage';
 import RepositoryDetailPage from './src/pages/PopularPage/RepositoryDetailPage';
 import CustomKeyPage from './src/pages/MyPage/CustomKeyPage';
 import SortKeyPage from './src/pages/MyPage/SortKeyPage';
+import AboutPage from './src/pages/MyPage/AboutPage';
+import WebsitePage from './src/pages/MyPage/WebsitePage';
 
 export default class App extends React.Component {
   render() {
@@ -83,6 +85,24 @@ export default class App extends React.Component {
               },
               my_sort_key: {
                 screen: SortKeyPage,
+                navigationOptions: { 
+                  tabBarVisible: false 
+                }
+              },
+              my_about_main: {
+                screen: AboutPage,
+                navigationOptions: { 
+                  tabBarVisible: false 
+                }
+              },
+              my_about_website: {
+                screen: WebsitePage,
+                navigationOptions: { 
+                  tabBarVisible: false 
+                }
+              },
+              my_about_repo_detail: {
+                screen: RepositoryDetailPage,
                 navigationOptions: { 
                   tabBarVisible: false 
                 }
