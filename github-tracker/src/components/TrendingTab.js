@@ -64,9 +64,9 @@ class TrendingTab extends Component {
 
   onFavorite(item, isFavorite) {
     if (isFavorite) {
-      favoriteService.saveFavoriteItem(item.fullName, JSON.stringify(item));
+      favoriteService.saveFavoriteItem(item.fullName, JSON.stringify(item), this.notifyTab);
     } else {
-      favoriteService.removeFavoriteItem(item.fullName);
+      favoriteService.removeFavoriteItem(item.fullName, this.notifyTab);
     }
   }
 
@@ -85,6 +85,10 @@ class TrendingTab extends Component {
       .catch(() => {
         this.flushFavoriteState();
       });
+  }
+
+  notifyTab = () => {
+    this.loadData(this.props.timeSpan, true);
   }
 
   flushFavoriteState = () => {

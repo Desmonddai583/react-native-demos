@@ -55,9 +55,13 @@ class PopularTab extends Component {
 
   onFavorite(item, isFavorite) {
     if (isFavorite) {
-      favoriteService.saveFavoriteItem(item.id.toString(), JSON.stringify(item));
+      favoriteService.saveFavoriteItem(
+        item.id.toString(), 
+        JSON.stringify(item), 
+        this.notifyTab
+      );
     } else {
-      favoriteService.removeFavoriteItem(item.id.toString());
+      favoriteService.removeFavoriteItem(item.id.toString(), this.notifyTab);
     }
   }
 
@@ -76,6 +80,10 @@ class PopularTab extends Component {
       .catch(() => {
         this.flushFavoriteState();
       });
+  }
+
+  notifyTab = () => {
+    this.loadData(true);
   }
 
   flushFavoriteState = () => {

@@ -13,6 +13,7 @@ import RepositoryDetailPage from './src/pages/PopularPage/RepositoryDetailPage';
 import CustomKeyPage from './src/pages/MyPage/CustomKeyPage';
 import SortKeyPage from './src/pages/MyPage/SortKeyPage';
 import AboutPage from './src/pages/MyPage/AboutPage';
+import AboutMePage from './src/pages/MyPage/AboutMePage';
 import WebsitePage from './src/pages/MyPage/WebsitePage';
 
 export default class App extends React.Component {
@@ -103,6 +104,12 @@ export default class App extends React.Component {
               },
               my_about_repo_detail: {
                 screen: RepositoryDetailPage,
+                navigationOptions: { 
+                  tabBarVisible: false 
+                }
+              },
+              my_about_author: {
+                screen: AboutMePage,
                 navigationOptions: { 
                   tabBarVisible: false 
                 }

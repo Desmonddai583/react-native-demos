@@ -19,7 +19,8 @@ class AboutPage extends Component {
       config
     );
     this.state = {
-      projectModels: []
+      projectModels: [],
+      author: config.author
     };
   }
 
@@ -32,7 +33,7 @@ class AboutPage extends Component {
     const params = { ...this.props, menuType: tab };
     switch (tab) {
       case MORE_MENU.ABOUT_AUTHOR:
-        // targetPage = 'my_custom_key';
+        targetPage = 'my_about_author';
         break;
       case MORE_MENU.WEBSITE:
         targetPage = 'my_about_website';
@@ -98,8 +99,8 @@ class AboutPage extends Component {
     return this.aboutCommon.render(content, {
       name: 'GitHub Popular',
       description: '这是一个用来查看GitHub最受欢迎与最热项目的APP, 它基于React Native支持Android和IOS双平台。',
-      avatar: 'http://avatar.csdn.net/1/1/E/1_fengyuzhengfan.jpg',
-      backgroundImg: 'http://www.devio.org/io/GitHubPopular/img/for_githubpopular_about_me.jpg'
+      avatar: this.state.author.avatar1,
+      backgroundImg: this.state.author.backgroundImg1
     });
   }
 }

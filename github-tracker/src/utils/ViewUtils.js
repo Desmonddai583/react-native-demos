@@ -17,7 +17,7 @@ class ViewUtils {
         <View style={styles.item}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Image 
-              source={icon}
+              source={icon || null}
               resizeMode='stretch'
               style={[{ width: 16, height: 16, marginRight: 10 }, tintStyle]}
             />

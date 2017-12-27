@@ -52,6 +52,7 @@ class MyPage extends Component {
       case MORE_MENU.CUSTOM_THEME:
         break;
       case MORE_MENU.ABOUT_AUTHOR:
+        targetPage = 'my_about_author';
         break;
       case MORE_MENU.ABOUT:
         targetPage = 'my_about_main';

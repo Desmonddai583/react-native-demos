@@ -70,7 +70,10 @@ class AboutCommon extends Component {
 
   onFavorite(item, isFavorite) {
     if (isFavorite) {
-      this.favoriteService.saveFavoriteItem(item.id.toString(), JSON.stringify(item));
+      this.favoriteService.saveFavoriteItem(
+        item.id.toString(), 
+        JSON.stringify(item)
+      );
     } else {
       this.favoriteService.removeFavoriteItem(item.id.toString());
     }
