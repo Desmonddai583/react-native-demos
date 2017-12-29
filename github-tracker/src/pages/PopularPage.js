@@ -3,7 +3,8 @@ import {
   View,
   StyleSheet,
   Image,
-  DeviceEventEmitter
+  DeviceEventEmitter,
+  TouchableOpacity
 } from 'react-native';
 import Toast, { DURATION } from 'react-native-easy-toast';
 import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view';
@@ -56,6 +57,28 @@ class PopularPage extends Component {
       });
   }
 
+  renderRightButton() {
+    return (
+      <View>
+        <TouchableOpacity
+          
+          onPress={() => {
+            this.props.navigation.navigate('popular_search', {
+              ...this.props
+            });
+          }}
+        >
+          <View style={{ padding: 5, marginRight: 8 }}>
+            <Image
+              style={{ width: 24, height: 24 }}
+              source={require('../../res/images/ic_search_white_48pt.png')}
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   render() {
     const content = this.state.languages.length > 0 ? (
       <ScrollableTabView
@@ -76,6 +99,7 @@ class PopularPage extends Component {
         <NavigationBar 
           title='最热'
           statusBar={{ backgroundColor: '#2196F3' }}
+          rightButton={this.renderRightButton()}
         />
         {content}
         <Toast ref="toast" />

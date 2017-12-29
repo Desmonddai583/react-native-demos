@@ -8,6 +8,7 @@ import WelcomePage from './src/pages/WelcomePage';
 import PopularPage from './src/pages/PopularPage';
 import TrendingPage from './src/pages/TrendingPage';
 import FavoritePage from './src/pages/FavoritePage';
+import SearchPage from './src/pages/SearchPage';
 import MyPage from './src/pages/MyPage';
 import RepositoryDetailPage from './src/pages/PopularPage/RepositoryDetailPage';
 import CustomKeyPage from './src/pages/MyPage/CustomKeyPage';
@@ -29,6 +30,12 @@ export default class App extends React.Component {
               },
               popular_detail: {
                 screen: RepositoryDetailPage,
+                navigationOptions: { 
+                  tabBarVisible: false 
+                }
+              },
+              popular_search: {
+                screen: SearchPage,
                 navigationOptions: { 
                   tabBarVisible: false 
                 }
