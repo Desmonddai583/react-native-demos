@@ -1,0 +1,16 @@
+{
+  "workbench.startupEditor": "newUntitledFile",
+  "files.associations": {
+      "*.js": "javascript"
+  },
+  "[javascript]": {
+      
+  },
+  "emmet.includeLanguages": {
+      "javascript": "html"
+  },
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": true,
+  "window.zoomLevel": 0
+}
