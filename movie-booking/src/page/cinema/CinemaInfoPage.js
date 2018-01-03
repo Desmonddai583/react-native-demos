@@ -7,13 +7,12 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
-  ProgressBarAndroid,
-  Alert
+  ProgressBarAndroid
 } from 'react-native';
 
 import Toolbar from '../../component/Toolbar';
 
-export default class cinemaDetail extends Component {
+export default class CinemaInfoPage extends Component {
   constructor(props) {
     super(props);
     this.data = null;
@@ -65,7 +64,6 @@ export default class cinemaDetail extends Component {
       .then((response) => response.json())
       .then((responseData) => {
         this.data = responseData.data;
-        console.log(url)
         const showModel = this.data.DateShow[this.initDate] || 
           this.data.DateShow[Object.keys(this.data.DateShow)[0]];
         this.setState({
@@ -78,7 +76,16 @@ export default class cinemaDetail extends Component {
   }
 
   sale() {
-    Alert.alert('提示', '没有API,暂无购票能使用！');
+    this.props.navigation.navigate('cinema_sale', {
+      location: {
+        state: {
+          dimensional: 2,
+          time: 1514953446,
+          startTime: '20:00',
+          language: '英文'
+        }
+      }
+    });
   }
 
   loadingData() {

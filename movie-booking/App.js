@@ -1,13 +1,16 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { TabNavigator, StackNavigator } from 'react-navigation';
+import { Provider } from 'react-redux';
 
+import store from './store';
 import FilmPage from './src/page/FilmPage';
 import CinemaPage from './src/page/CinemaPage';
 import UserPage from './src/page/UserPage';
 import FilmInfoPage from './src/page/film/FilmInfoPage';
 import MoreCommentPage from './src/page/film/MoreCommentPage';
 import CinemaInfoPage from './src/page/cinema/CinemaInfoPage';
+import CinemaSalePage from './src/page/cinema/CinemaSalePage';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -52,6 +55,12 @@ export default class App extends React.Component {
             navigationOptions: { 
               tabBarVisible: false 
             }
+          },
+          cinema_sale: {
+            screen: CinemaSalePage,
+            navigationOptions: { 
+              tabBarVisible: false 
+            }
           }
         }, {
           navigationOptions: {
@@ -67,9 +76,11 @@ export default class App extends React.Component {
     });
 
     return (
-      <View style={styles.container}>
-        <MainNavigator />
-      </View>
+      <Provider store={store}>
+        <View style={styles.container}>
+          <MainNavigator />
+        </View>
+      </Provider>
     );
   }
 }

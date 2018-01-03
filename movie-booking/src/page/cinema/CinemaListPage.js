@@ -9,7 +9,7 @@ import {
 
 import ToolbarHome from '../../component/ToolbarHome';
 
-export default class cinemaList extends Component {
+export default class CinemaListPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
