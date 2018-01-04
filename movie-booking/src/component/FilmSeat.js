@@ -63,21 +63,11 @@ class FilmSeat extends Component {
     };
   }
 
-  getSeatColNum(seatList, seatWidth, numIndexWidth) {
-    let numIndex = 0;
-    const numArr = [];
-    seatList.forEach((item) => {
-      if (item.yAxis === numIndex + 1) {
-        numArr[numIndex] = item;
-      } else {
-        numIndex++;
-      }
-    });
-    const result = numArr.map((item, index) => {
-      const top = ((seatWidth) * (item.yAxis - 1));
+  getSeatColNum(maxY, seatWidth, numIndexWidth) {
+    const result = new Array(maxY).fill(0).map((_, index) => {
       const styleNumIndex = {
-        top,
-        width: numIndexWidth
+        width: numIndexWidth,
+        height: seatWidth
       };
       return (
         <View>
@@ -110,7 +100,8 @@ class FilmSeat extends Component {
           left: ((seatWidth * (item.xAxis - 1)) + (seatWidth / 2)) - 0.01,
           top: seatWidth * (item.yAxis - 1),
           width: seatWidth,
-          height: seatWidth
+          height: seatWidth,
+          position: 'absolute'
         };
         return (
           <Image
@@ -120,13 +111,30 @@ class FilmSeat extends Component {
           />
         );
       });
-      const listNum = this.getSeatColNum(seatList, seatWidth, numIndexWidth);
+      const listNum = this.getSeatColNum(maxSize.maxY, seatWidth, numIndexWidth);
       return (
         <View 
-          style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
+          style={{ 
+            flex: 1, 
+            flexDirection: 'row', 
+            justifyContent: 'space-between',
+            marginTop: 20
+          }}
         >
-          <View>{listNum}</View>
-          <View>{list}</View>
+          <View style={{ flex: 1 }}>
+            <View style={{ top: 100 }}>
+              {listNum}
+            </View>
+          </View>
+          <View style={{ flex: 9 }}>
+            <View style={{ alignItems: 'center', height: 100 }}>
+              <Text>{filmSeatList.roomName}</Text>
+              <Text>银幕中央</Text>
+            </View>
+            <View style={{ top: 100 }}>
+              {list}
+            </View>
+          </View>
         </View>
       );
     }
