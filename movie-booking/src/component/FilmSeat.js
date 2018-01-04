@@ -134,7 +134,7 @@ class FilmSeat extends Component {
             <Image
               key={`seatId${index}`}
               style={[style, styles.seatItem]}
-              source={require('../../res/images/seat_white.png')}
+              source={isSoldUrl[index] === 'seat_white' ? require('../../res/images/seat_white.png') : require('../../res/images/seat_green.png')}
             />
           </TouchableHighlight>
         );
