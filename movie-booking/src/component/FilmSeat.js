@@ -4,7 +4,9 @@ import {
   Text,
   Image,
   StyleSheet,
-  Dimensions
+  Dimensions,
+  TouchableHighlight,
+  Alert
 } from 'react-native';
 
 class FilmSeat extends Component {
@@ -18,7 +20,7 @@ class FilmSeat extends Component {
     this.state = {
       numIndexWidth,
       seatWrapperWidth,
-      isSoldUrl: 'seat_white'
+      isSoldUrl: []
     };
   }
 
@@ -83,11 +85,35 @@ class FilmSeat extends Component {
     return result;
   }
 
+  changeSeat(isSoldUrl, index, item) {
+    const tempIsSoldUrl = isSoldUrl;
+    const { changeSeatConf, filmBuyList } = this.props;
+    if (tempIsSoldUrl[index] === 'seat_white') {
+      if (filmBuyList.item.length < 4) {
+        tempIsSoldUrl[index] = 'seat_green';
+        changeSeatConf(item, tempIsSoldUrl, 'add');
+      } else {
+        Alert.alert(
+          '最多选四个座位！',
+          '最多选四个座位！',
+          [
+            { text: 'OK' },
+          ],
+          { cancelable: false }
+        );
+      }
+    } else if (tempIsSoldUrl[index] === 'seat_green') {
+      tempIsSoldUrl[index] = 'seat_white';
+      changeSeatConf(item, tempIsSoldUrl, 'delete');
+    }
+  }
+
   render() {
     const { filmSeatList } = this.props;
     const { 
       numIndexWidth,
       seatWrapperWidth,
+      isSoldUrl
     } = this.state;
     const seatList = filmSeatList.seatArr;
 
@@ -104,11 +130,13 @@ class FilmSeat extends Component {
           position: 'absolute'
         };
         return (
-          <Image
-            key={`seatId${index}`}
-            style={[style, styles.seatItem]}
-            source={require('../../res/images/seat_white.png')}
-          />
+          <TouchableHighlight onPress={this.changeSeat.bind(this, isSoldUrl, index, item)}>
+            <Image
+              key={`seatId${index}`}
+              style={[style, styles.seatItem]}
+              source={require('../../res/images/seat_white.png')}
+            />
+          </TouchableHighlight>
         );
       });
       const listNum = this.getSeatColNum(maxSize.maxY, seatWidth, numIndexWidth);
@@ -122,16 +150,16 @@ class FilmSeat extends Component {
           }}
         >
           <View style={{ flex: 1 }}>
-            <View style={{ top: 100 }}>
+            <View style={{ top: 40 }}>
               {listNum}
             </View>
           </View>
           <View style={{ flex: 9 }}>
-            <View style={{ alignItems: 'center', height: 100 }}>
+            <View style={{ alignItems: 'center', height: 30 }}>
               <Text>{filmSeatList.roomName}</Text>
               <Text>银幕中央</Text>
             </View>
-            <View style={{ top: 100 }}>
+            <View style={{ top: 10 }}>
               {list}
             </View>
           </View>
