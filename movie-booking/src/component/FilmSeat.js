@@ -3,7 +3,6 @@ import {
   View,
   Text,
   Image,
-  StyleSheet,
   Dimensions,
   TouchableHighlight,
   Alert
@@ -72,7 +71,7 @@ class FilmSeat extends Component {
         height: seatWidth
       };
       return (
-        <View>
+        <View key={`seat-index-${index}`}>
           <Text 
             key={`numindex${index}`}
             style={styleNumIndex}
@@ -94,7 +93,7 @@ class FilmSeat extends Component {
         changeSeatConf(item, tempIsSoldUrl, 'add');
       } else {
         Alert.alert(
-          '最多选四个座位！',
+          '',
           '最多选四个座位！',
           [
             { text: 'OK' },
@@ -130,11 +129,18 @@ class FilmSeat extends Component {
           position: 'absolute'
         };
         return (
-          <TouchableHighlight onPress={this.changeSeat.bind(this, isSoldUrl, index, item)}>
+          <TouchableHighlight 
+            key={`seat-${index}`} 
+            onPress={this.changeSeat.bind(this, isSoldUrl, index, item)}
+          >
             <Image
               key={`seatId${index}`}
-              style={[style, styles.seatItem]}
-              source={isSoldUrl[index] === 'seat_white' ? require('../../res/images/seat_white.png') : require('../../res/images/seat_green.png')}
+              style={style}
+              source={
+                isSoldUrl[index] === 'seat_white' ? 
+                  require('../../res/images/seat_white.png') : 
+                  require('../../res/images/seat_green.png')
+              }
             />
           </TouchableHighlight>
         );
@@ -171,9 +177,5 @@ class FilmSeat extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-
-});
 
 export default FilmSeat;

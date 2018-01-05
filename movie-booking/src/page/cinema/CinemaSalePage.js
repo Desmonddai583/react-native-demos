@@ -34,7 +34,11 @@ class CinemaSalePage extends Component {
         <FilmSeat 
           filmSeatList={filmSeatList}
           filmBuyList={filmBuyList}
-          animationTime={200}
+          changeSeatConf={this.changeSeatConf.bind(this)} 
+        />
+        <FilmSeatSale 
+          filmBuyList={filmBuyList}
+          filmSeatList={filmSeatList}
           changeSeatConf={this.changeSeatConf.bind(this)} 
         />
       </View>
