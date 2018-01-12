@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, Platform } from 'react-native';
-import { Button, Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
+import { ListView, Platform } from 'react-native';
+import { Icon, ListItem } from 'react-native-elements';
 
 class SettingScreen extends Component {
   static navigationOptions = () => ({
@@ -11,19 +11,54 @@ class SettingScreen extends Component {
     tabBarIcon: ({ tintColor }) => <Icon name="favorite" size={30} color={tintColor} />,
   });
 
+  constructor(props) {
+    super(props);
+  
+    const stocks = [
+      {
+        name: 'bitcoin',
+        image: require('../../res/images/bitcoin.png')
+      },
+      {
+        name: 'ethereum',
+        image: require('../../res/images/bitcoin.png')
+      },
+      {
+        name: 'eos',
+        image: require('../../res/images/bitcoin.png')
+      }
+    ];
+    
+    const ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2
+    });
+
+    this.state = {
+      dataSource: ds.cloneWithRows(stocks)
+    };
+  }
+
+  renderRow(stock) {
+    return (
+      <ListItem
+        key={stock.name}
+        roundAvatar
+        title={stock.name}
+        avatar={stock.img}
+      />
+    );
+  }
+
   render() {
     return (
-      <View>
-        <Button 
-          title="Reset Liked Jobs"
-          large
-          icon={{ name: 'delete-forever' }}
-          backgroundColor="#F44336"
-          onPress={this.props.clearLikedJobs}
-        />
-      </View>
+      <ListView 
+        enableEmptySections
+        dataSource={this.state.dataSource}
+        renderRow={this.renderRow}
+      />
     );
   }
 }
 
 export default connect(null)(SettingScreen);
+
