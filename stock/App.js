@@ -1,12 +1,13 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { TabNavigator } from 'react-navigation';
+import { TabNavigator, StackNavigator } from 'react-navigation';
 import { Provider } from 'react-redux';
 
 import store from './src/store';
 import WelcomeScreen from './src/screens/WelcomeScreen';
 import AuthScreen from './src/screens/AuthScreen';
 import StockScreen from './src/screens/StockScreen';
+import StockDetailScreen from './src/screens/Stock/StockDetailScreen';
 import SettingScreen from './src/screens/SettingScreen';
 
 export default class App extends React.Component {
@@ -16,7 +17,23 @@ export default class App extends React.Component {
       auth: { screen: AuthScreen },
       main: {
         screen: TabNavigator({
-          stock: { screen: StockScreen },
+          stock: { 
+            screen: StackNavigator({
+              stock_list: {
+                screen: StockScreen
+              },
+              stock_detail: {
+                screen: StockDetailScreen,
+                navigationOptions: { 
+                  tabBarVisible: false 
+                }
+              }
+            }, {
+              navigationOptions: {
+                header: null
+              }
+            }) 
+          },
           setting: { screen: SettingScreen }
         }, {
           tabBarPosition: 'bottom',

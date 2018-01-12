@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ListView, Platform } from 'react-native';
-import { Icon, ListItem } from 'react-native-elements';
+import { ListView, Platform, View, TouchableOpacity } from 'react-native';
+import { Icon, ListItem, Header } from 'react-native-elements';
 
 class SettingScreen extends Component {
   static navigationOptions = () => ({
     headerStyle: {
       marginTop: Platform.OS === 'android' ? 24 : 0
     },
-    tabBarIcon: ({ tintColor }) => <Icon name="favorite" size={30} color={tintColor} />,
+    tabBarIcon: ({ tintColor }) => <Icon name="trending-up" size={30} color={tintColor} />,
   });
 
   constructor(props) {
@@ -38,24 +38,53 @@ class SettingScreen extends Component {
     };
   }
 
-  renderRow(stock) {
-    return (
-      <ListItem
-        key={stock.name}
-        roundAvatar
-        title={stock.name}
-        avatar={stock.img}
-      />
-    );
-  }
+  renderRow = (stock) => (
+    <ListItem
+      onPress={() =>
+        this.props.navigation.navigate('stock_detail')
+      }
+      key={stock.name}
+      roundAvatar
+      title={stock.name}
+      avatar={stock.image}
+    />
+  );
+
+  renderRightComponent = () => (
+    <View>
+      <TouchableOpacity
+        onPress={() => {
+          
+        }}
+      >
+        <View style={{ paddingTop: Platform.OS === 'android' ? 40 : 16 }}>
+          <Icon
+            name="add" 
+            size={30} 
+            color='#fff'
+          />
+        </View>
+      </TouchableOpacity>
+    </View>
+  )
 
   render() {
     return (
-      <ListView 
-        enableEmptySections
-        dataSource={this.state.dataSource}
-        renderRow={this.renderRow}
-      />
+      <View>
+        <Header
+          leftComponent={{ icon: 'menu', color: '#fff' }}
+          centerComponent={{ 
+            text: 'Stock',
+            style: { fontWeight: '600', fontSize: 20, color: '#fff' } 
+          }}
+          rightComponent={this.renderRightComponent()}
+        />
+        <ListView 
+          enableEmptySections
+          dataSource={this.state.dataSource}
+          renderRow={this.renderRow}
+        />
+      </View>   
     );
   }
 }
