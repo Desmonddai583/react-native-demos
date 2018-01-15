@@ -7,12 +7,12 @@ class PublicSocket {
   constructor(channel) {
     if (!instance) {
       instance = this;
+      const socketOptions = {
+        // logger: (kind, msg, data) => { console.log(`${kind}: ${msg}`, data); }
+      };
+      this.socket = new Socket(`${ROOT_SOCKET}/socket`, socketOptions);
+      this.socket.connect();
     }
-    const socketOptions = {
-      // logger: (kind, msg, data) => { console.log(`${kind}: ${msg}`, data); }
-    };
-    this.socket = new Socket(`${ROOT_SOCKET}/socket`, socketOptions);
-    this.socket.connect();
     this.channel = this.socket.channel(channel, {});
     return instance;
   }
