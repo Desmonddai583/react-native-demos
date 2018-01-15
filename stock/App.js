@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import firebase from 'firebase';
 import { TabNavigator, StackNavigator } from 'react-navigation';
 import { Provider } from 'react-redux';
 
@@ -11,6 +12,19 @@ import StockDetailScreen from './src/screens/Stock/StockDetailScreen';
 import SettingScreen from './src/screens/SettingScreen';
 
 export default class App extends React.Component {
+  componentDidMount() {
+    const config = {
+      apiKey: 'AIzaSyBi-125mLhxyiPqVYucnufenZ1gbeAuzjQ',
+      authDomain: 'one-time-password-cf3cc.firebaseapp.com',
+      databaseURL: 'https://one-time-password-cf3cc.firebaseio.com',
+      projectId: 'one-time-password-cf3cc',
+      storageBucket: 'one-time-password-cf3cc.appspot.com',
+      messagingSenderId: '344468271785'
+    };
+
+    firebase.initializeApp(config);
+  }
+
   render() {
     const MainNavigator = TabNavigator({
       welcome: { screen: WelcomeScreen },

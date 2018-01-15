@@ -14,7 +14,8 @@ class WelcomeScreen extends Component {
   state = { token: null }
 
   async componentWillMount() {
-    const token = await AsyncStorage.getItem('fb_token');
+    // const token = await AsyncStorage.getItem('fb_token');
+    const token = await AsyncStorage.getItem('anonymous_token');
 
     if (token) {
       this.props.navigation.navigate('stock');
