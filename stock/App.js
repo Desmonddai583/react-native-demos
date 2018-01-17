@@ -1,8 +1,9 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import firebase from 'firebase';
+import EventEmitter from 'EventEmitter';
 import { TabNavigator, StackNavigator } from 'react-navigation';
 import { Provider } from 'react-redux';
+import firebase from 'firebase';
 
 import store from './src/store';
 import WelcomeScreen from './src/screens/WelcomeScreen';
@@ -12,7 +13,7 @@ import StockDetailScreen from './src/screens/Stock/StockDetailScreen';
 import SettingScreen from './src/screens/SettingScreen';
 
 export default class App extends React.Component {
-  componentDidMount() {
+  componentWillMount() {
     const config = {
       apiKey: 'AIzaSyBi-125mLhxyiPqVYucnufenZ1gbeAuzjQ',
       authDomain: 'one-time-password-cf3cc.firebaseapp.com',
@@ -23,14 +24,6 @@ export default class App extends React.Component {
     };
 
     firebase.initializeApp(config);
-
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.setState({ loggedIn: true });
-      } else {
-        this.setState({ loggedIn: false });
-      }
-    });
   }
 
   render() {
@@ -67,14 +60,22 @@ export default class App extends React.Component {
     }, {
       navigationOptions: {
         tabBarVisible: false
-      },
-      lazy: true
+      }
     });
+
+    const navigationEvents = new EventEmitter();
 
     return (
       <Provider store={store}>
         <View style={styles.container}>
-          <MainNavigator />
+          <MainNavigator
+            screenProps={{ navigationEvents }}
+            onNavigationStateChange={(prevState, newState, action) => {
+              if (action.type === 'Navigation/NAVIGATE') {
+                navigationEvents.emit(`onFocus:${action.routeName}`);
+              }
+            }}
+          />
         </View>
       </Provider>
     );

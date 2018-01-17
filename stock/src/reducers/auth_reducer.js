@@ -10,10 +10,10 @@ export default function (state = {}, action) {
     case FACEBOOK_LOGIN_SUCCESS:
       return { token: action.payload };
     case ANONYMOUS_LOGIN_SUCCESS:
-      return { token: action.payload };
+      return { loggedIn: true };
     case FACEBOOK_LOGIN_FAIL:
     case ANONYMOUS_LOGIN_FAIL:
-      return { token: null };
+      return { loggedIn: false };
     default:
       return state;
   }

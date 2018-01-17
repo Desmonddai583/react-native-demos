@@ -1,26 +1,19 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { AsyncStorage } from 'react-native';
+import { connect } from 'react-redux';
 import { AppLoading } from 'expo';
 import Slides from '../components/Slides';
 
 const SLIDE_DATA = [
-  { text: 'Welcome to JobApp', color: '#03A9F4' },
-  { text: 'Use this to get a job', color: '#009688' },
-  { text: 'Set your location, then swipe away', color: '#03A9F4' }
+  { text: 'Welcome to StockApp', color: '#03A9F4' },
+  { text: 'Use this to run back test', color: '#009688' },
+  { text: 'Add your alert, then get notification', color: '#03A9F4' }
 ];
 
 class WelcomeScreen extends Component {
-  state = { token: null }
-
   async componentWillMount() {
-    // const token = await AsyncStorage.getItem('fb_token');
-    const token = await AsyncStorage.getItem('anonymous_token');
-
-    if (token) {
-      this.props.navigation.navigate('stock');
-    } else {
-      this.setState({ token: false });
+    if (this.props.loggedIn) {
+      this.props.navigation.navigate('auth');
     }
   }
 
@@ -29,7 +22,7 @@ class WelcomeScreen extends Component {
   }
 
   render() {
-    if (_.isNull(this.state.token)) {
+    if (_.isNull(this.props.loggedIn)) {
       return <AppLoading />;
     }
     return (
@@ -38,4 +31,8 @@ class WelcomeScreen extends Component {
   }
 }
 
-export default WelcomeScreen;
+function mapStateToProps({ auth }) {
+  return { loggedIn: auth.loggedIn };
+}
+
+export default connect(mapStateToProps)(WelcomeScreen);

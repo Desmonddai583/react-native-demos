@@ -5,8 +5,6 @@ import {
   Platform,
   View, 
   TouchableOpacity, 
-  AsyncStorage, 
-  Alert, 
   ActivityIndicator 
 } from 'react-native';
 import { Icon, ListItem, Header } from 'react-native-elements';
@@ -47,52 +45,6 @@ class SettingScreen extends Component {
       isLoading: true,
       socket: null
     };
-  }
-
-  async componentWillMount() {
-    const token = await AsyncStorage.getItem('anonymous_token');
-
-    if (token) {
-      const { channel, socket } = new UserSocket('room:lobby');
-      this.setState({
-        socket
-      });
-    
-      channel.join()
-        .receive('ok', () => {
-          channel.push('new-request', { type: 'bind-to-user', token });
-        })
-        .receive('error', () => { 
-          Alert.alert(
-            '',
-            'Fail to connect to server!',
-            [
-              { text: 'OK' },
-            ],
-            { cancelable: false }
-          );
-        });
-
-      channel.on('response', payload => {
-        const str = JSON.stringify(payload, null, 2);
-        console.log(`Response: ${str}`);
-        this.setState({ isLoading: false });
-      });
-    } else {
-      Alert.alert(
-        '',
-        'Your account has not yet been logined',
-        [
-          { text: 'OK' },
-        ],
-        { cancelable: false }
-      );
-      this.setState({ isLoading: false });
-    }
-  }
-
-  componentWillUnmount() {
-    this.state.socket.disconnect();
   }
 
   renderRow = (stock) => (
