@@ -11,6 +11,8 @@ class UserSocket {
         // logger: (kind, msg, data) => { console.log(`${kind}: ${msg}`, data); }
       };
       this.socket = new Socket(`${ROOT_SOCKET}/socket`, socketOptions);
+      this.socket.onError(() => console.log('Cannot connect.'));
+      this.socket.onClose(() => console.log('Goodbye.'));
       this.socket.connect();
     }
     this.channel = this.socket.channel(`room:${uid}`, { token });
