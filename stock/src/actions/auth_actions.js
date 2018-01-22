@@ -8,8 +8,13 @@ import {
   FACEBOOK_LOGIN_FAIL,
   ANONYMOUS_LOGIN_SUCCESS,
   ANONYMOUS_LOGIN_FAIL,
-  FIREBASE_CONNECTION_FAIL
+  FIREBASE_CONNECTION_FAIL,
+  VALIDATE_LOGIN
 } from './types';
+
+export const validateLogin = (user) => dispatch => (
+  dispatch({ type: VALIDATE_LOGIN, payload: user || false })
+);
 
 export const facebookLogin = () => async dispatch => {
   const token = await AsyncStorage.getItem('fb_token');
@@ -35,21 +40,22 @@ const doFacebookLogin = async dispatch => {
 };
 
 export const anonymousLogin = () => async dispatch => {
-  await firebase.auth().onAuthStateChanged(async(user) => {
-    if (user) {
-      // try {
-      //   const idToken = await firebase.auth().currentUser.getIdToken(true);
-      //   const socket = new UserSocket(idToken, user.uid);
-      //   socket.channel.join()
-      //     .receive('ok', () => { dispatch({ type: ANONYMOUS_LOGIN_SUCCESS }); })
-      //     .receive('error', () => { dispatch({ type: ANONYMOUS_LOGIN_FAIL }); });
-      // } catch (error) {
-        return dispatch({ type: FIREBASE_CONNECTION_FAIL });
-      // }
-    } else {
-      doAnonymousLogin(dispatch);
-    }
-  });
+  if (firebase.auth().currentUser) {
+    const idToken = await firebase.auth().currentUser.getIdToken(true);
+      const socket = new UserSocket(idToken, firebase.auth().currentUser.uid);
+      socket.channel.join()
+        .receive('ok', () => { dispatch({ type: ANONYMOUS_LOGIN_SUCCESS }); })
+        .receive('error', async () => {
+          const error = await firebase.auth().signOut();
+          if (error) {
+            return dispatch({ type: FIREBASE_CONNECTION_FAIL });
+          }
+          socket.channel.leave();
+          return dispatch({ type: ANONYMOUS_LOGIN_FAIL });
+        });
+  } else {
+    doAnonymousLogin();
+  }
 };
 
 const doAnonymousLogin = async dispatch => {

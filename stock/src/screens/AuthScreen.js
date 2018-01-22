@@ -6,10 +6,11 @@ import {
   StyleSheet, 
   Image,
   Text,
-  TouchableOpacity
+  Alert
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { Button, SocialIcon } from 'react-native-elements';
+import * as Progress from 'react-native-progress';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
@@ -21,7 +22,6 @@ class AuthScreen extends Component {
 
     this.onFocus = this.onFocus.bind(this);
     this.state = {
-      loginFail: false
     };
   }
 
@@ -35,17 +35,30 @@ class AuthScreen extends Component {
 
   onFocus() {
     this.props.anonymousLogin();
-    this.onAuthComplete(this.props);
   }
 
   onAuthComplete(props) {
-    if (props.loggedIn) {
+    if (props.loggedInFail) {
+      Alert.alert(
+        'Login Fail',
+        'Login credential is invalid, please re-login.',
+        [
+          { text: 'Ok', 
+            style: 'cancel'
+          }
+        ]
+      );
+    } else {
+      this.setState({
+        firebaseConnectionError: false
+      });
       this.props.navigation.navigate('stock');
     }
     if (props.firebaseConnectionError) {
       this.setState({
         firebaseConnectionError: true
       });
+      this.props.anonymousLogin();
     }
   }
 
@@ -128,12 +141,15 @@ class AuthScreen extends Component {
         <View>
           <Modal isVisible={this.state.firebaseConnectionError}>
             <View style={styles.modalContent}>
-              <Text>Hello!</Text>
-              <TouchableOpacity>
-                <View style={styles.button}>
-                  <Text>hey Desmond!</Text>
-                </View>
-              </TouchableOpacity>
+              <Text style={{ fontSize: 20 }}>Fail to connect server.</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+                <Progress.CircleSnail />
+                <Text 
+                  style={{ fontSize: 16, color: '#777777', marginLeft: 10 }}
+                >
+                  Retrying, please wait...
+                </Text>
+              </View>
             </View>
           </Modal>
         </View>
@@ -187,7 +203,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 22,
     justifyContent: 'center',
-    alignItems: 'center',
     borderRadius: 4,
     borderColor: 'rgba(0, 0, 0, 0.1)'
   },
@@ -205,7 +220,8 @@ const styles = StyleSheet.create({
 function mapStateToProps({ auth }) {
   return { 
     loggedIn: auth.loggedIn, 
-    firebaseConnectionError: auth.firebaseConnectionError 
+    firebaseConnectionError: auth.firebaseConnectionError,
+    loggedInFail: auth.loggedInFail
   };
 }
 

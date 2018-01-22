@@ -1,8 +1,10 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import firebase from 'firebase';
 import { AppLoading } from 'expo';
 import Slides from '../components/Slides';
+import * as actions from '../actions';
 
 const SLIDE_DATA = [
   { text: 'Welcome to StockApp', color: '#03A9F4' },
@@ -11,8 +13,14 @@ const SLIDE_DATA = [
 ];
 
 class WelcomeScreen extends Component {
-  async componentWillMount() {
-    if (this.props.loggedIn) {
+  componentWillMount() {
+    firebase.auth().onAuthStateChanged((user) => {
+      this.props.validateLogin(user);
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.loggedIn) {
       this.props.navigation.navigate('auth');
     }
   }
@@ -22,7 +30,7 @@ class WelcomeScreen extends Component {
   }
 
   render() {
-    if (_.isNull(this.props.loggedIn)) {
+    if (_.isNull(this.props.user)) {
       return <AppLoading />;
     }
     return (
@@ -32,7 +40,7 @@ class WelcomeScreen extends Component {
 }
 
 function mapStateToProps({ auth }) {
-  return { loggedIn: auth.loggedIn };
+  return { loggedIn: auth.loggedIn, user: auth.currentUser };
 }
 
-export default connect(mapStateToProps)(WelcomeScreen);
+export default connect(mapStateToProps, actions)(WelcomeScreen);
