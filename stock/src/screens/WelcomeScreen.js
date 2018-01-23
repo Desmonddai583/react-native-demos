@@ -1,10 +1,8 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import firebase from 'firebase';
+import { AsyncStorage } from 'react-native';
 import { AppLoading } from 'expo';
 import Slides from '../components/Slides';
-import * as actions from '../actions';
 
 const SLIDE_DATA = [
   { text: 'Welcome to StockApp', color: '#03A9F4' },
@@ -13,24 +11,25 @@ const SLIDE_DATA = [
 ];
 
 class WelcomeScreen extends Component {
-  componentWillMount() {
-    firebase.auth().onAuthStateChanged((user) => {
-      this.props.validateLogin(user);
-    });
-  }
+  state = { isOpened: null }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.loggedIn) {
+  async componentWillMount() {
+    const isOpened = await AsyncStorage.getItem('isOpened');
+
+    if (JSON.parse(isOpened)) {
       this.props.navigation.navigate('auth');
+    } else {
+      this.setState({ isOpened: false });
     }
   }
 
-  onSlidesComplete = () => {
+  onSlidesComplete = async () => {
+    await AsyncStorage.setItem('isOpened', JSON.stringify(true));
     this.props.navigation.navigate('auth');
   }
 
   render() {
-    if (_.isNull(this.props.user)) {
+    if (_.isNull(this.state.isOpened)) {
       return <AppLoading />;
     }
     return (
@@ -39,8 +38,4 @@ class WelcomeScreen extends Component {
   }
 }
 
-function mapStateToProps({ auth }) {
-  return { loggedIn: auth.loggedIn, user: auth.currentUser };
-}
-
-export default connect(mapStateToProps, actions)(WelcomeScreen);
+export default WelcomeScreen;

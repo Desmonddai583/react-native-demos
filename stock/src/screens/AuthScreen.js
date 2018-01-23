@@ -10,8 +10,10 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { Button, SocialIcon } from 'react-native-elements';
+import _ from 'lodash';
 import * as Progress from 'react-native-progress';
 import { connect } from 'react-redux';
+import { AppLoading } from 'expo';
 import * as actions from '../actions';
 
 const ROUTE_NAME = 'auth';
@@ -48,10 +50,8 @@ class AuthScreen extends Component {
           }
         ]
       );
-    } else {
-      this.setState({
-        firebaseConnectionError: false
-      });
+    } 
+    if (props.loggedIn) {
       this.props.navigation.navigate('stock');
     }
     if (props.firebaseConnectionError) {
@@ -63,6 +63,9 @@ class AuthScreen extends Component {
   }
 
   render() {
+    if (_.isNull(this.props.loggedIn)) {
+      return <AppLoading />;
+    }
     return (
       <ScrollView
         style={styles.container}
