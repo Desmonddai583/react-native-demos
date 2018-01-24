@@ -29,7 +29,7 @@ class WelcomeScreen extends Component {
   }
 
   render() {
-    if (_.isNull(this.state.isOpened)) {
+    if (_.isNil(this.state.isOpened)) {
       return <AppLoading />;
     }
     return (

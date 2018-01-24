@@ -4,13 +4,16 @@ import EventEmitter from 'EventEmitter';
 import { TabNavigator, StackNavigator } from 'react-navigation';
 import { Provider } from 'react-redux';
 import firebase from 'firebase';
+import { PersistGate } from 'redux-persist/lib/integration/react';
 
-import store from './src/store';
+import configureStore from './src/store';
 import WelcomeScreen from './src/screens/WelcomeScreen';
 import AuthScreen from './src/screens/AuthScreen';
 import StockScreen from './src/screens/StockScreen';
 import StockDetailScreen from './src/screens/Stock/StockDetailScreen';
 import SettingScreen from './src/screens/SettingScreen';
+
+const { store, persistor } = configureStore();
 
 export default class App extends React.Component {
   componentWillMount() {
@@ -67,16 +70,18 @@ export default class App extends React.Component {
 
     return (
       <Provider store={store}>
-        <View style={styles.container}>
-          <MainNavigator
-            screenProps={{ navigationEvents }}
-            onNavigationStateChange={(prevState, newState, action) => {
-              if (action.type === 'Navigation/NAVIGATE') {
-                navigationEvents.emit(`onFocus:${action.routeName}`);
-              }
-            }}
-          />
-        </View>
+        <PersistGate loading={null} persistor={persistor}>
+          <View style={styles.container}>
+            <MainNavigator
+              screenProps={{ navigationEvents }}
+              onNavigationStateChange={(prevState, newState, action) => {
+                if (action.type === 'Navigation/NAVIGATE') {
+                  navigationEvents.emit(`onFocus:${action.routeName}`);
+                }
+              }}
+            />
+          </View>
+        </PersistGate>
       </Provider>
     );
   }

@@ -63,7 +63,7 @@ class AuthScreen extends Component {
   }
 
   render() {
-    if (_.isNull(this.props.loggedIn)) {
+    if (_.isNil(this.props.loggedIn)) {
       return <AppLoading />;
     }
     return (

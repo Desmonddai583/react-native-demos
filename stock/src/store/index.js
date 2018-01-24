@@ -14,17 +14,15 @@ const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, reducers.auth),
 });
 
-const store = createStore(
-  rootReducer,
-  {},
-  compose(
-    applyMiddleware(thunk)
-  )
-);
-
-// use .purge() to clean up the state
-persistStore(store, null, () => {
-  store.getState();
-});
-
-export default store;
+export default () => {
+  const store = createStore(
+    rootReducer,
+    {},
+    compose(
+      applyMiddleware(thunk)
+    )
+  );
+  const persistor = persistStore(store);
+  // persistor.purge();
+  return { store, persistor };
+};
