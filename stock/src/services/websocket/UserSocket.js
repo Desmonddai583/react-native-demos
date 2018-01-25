@@ -15,7 +15,11 @@ class UserSocket {
       this.socket.onClose(() => console.log('Goodbye.'));
       this.socket.connect();
     }
-    this.channel = this.socket.channel(`room:${uid}`, { token });
+    this.channel = instance.socket.channel(`room:${uid}`, { token });
+    return instance;
+  }
+
+  static getSocket() {
     return instance;
   }
 }

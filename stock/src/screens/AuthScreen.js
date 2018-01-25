@@ -9,6 +9,7 @@ import {
   Alert
 } from 'react-native';
 import Modal from 'react-native-modal';
+import firebase from 'firebase';
 import { Button, SocialIcon } from 'react-native-elements';
 import _ from 'lodash';
 import * as Progress from 'react-native-progress';
@@ -19,24 +20,29 @@ import * as actions from '../actions';
 const ROUTE_NAME = 'auth';
 
 class AuthScreen extends Component {
-  constructor() {
-    super();
-
-    this.onFocus = this.onFocus.bind(this);
-    this.state = {
-    };
-  }
+  state = { loggedIn: null }
 
   componentDidMount() {
     this.props.screenProps.navigationEvents.addListener(`onFocus:${ROUTE_NAME}`, this.onFocus);
   }
 
   componentWillReceiveProps(nextProps) {
+    this.setState({
+      loggedIn: nextProps.loggedIn
+    });
     this.onAuthComplete(nextProps);
   }
 
-  onFocus() {
-    this.props.anonymousLogin();
+  onFocus = () => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.props.accountLogin();
+      } else {
+        this.setState({
+          loggedIn: false
+        });
+      }
+    });
   }
 
   onAuthComplete(props) {
@@ -62,8 +68,12 @@ class AuthScreen extends Component {
     }
   }
 
+  anonymousLogin = () => {
+    this.props.doAnonymousLogin();
+  }
+
   render() {
-    if (_.isNil(this.props.loggedIn)) {
+    if (_.isNil(this.state.loggedIn)) {
       return <AppLoading />;
     }
     return (
@@ -142,7 +152,18 @@ class AuthScreen extends Component {
           />
         </View>
         <View>
-          <Modal isVisible={this.state.firebaseConnectionError}>
+          <Button
+            fontSize='14'
+            containerViewStyle={{ padding: 0, marginTop: 15 }}
+            buttonStyle={{ padding: 0 }}
+            transparent
+            color='#3FBCF9'
+            onPress={this.anonymousLogin}
+            title='Skip' 
+          />
+        </View>
+        <View>
+          <Modal isVisible={this.props.firebaseConnectionError}>
             <View style={styles.modalContent}>
               <Text style={{ fontSize: 20 }}>Fail to connect server.</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>

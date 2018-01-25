@@ -9,6 +9,9 @@ import {
 } from 'react-native';
 import { Icon, ListItem, Header } from 'react-native-elements';
 import UserSocket from '../services/websocket/UserSocket.js';
+import * as actions from '../actions';
+
+const ROUTE_NAME = 'stock';
 
 class SettingScreen extends Component {
   static navigationOptions = () => ({
@@ -20,31 +23,44 @@ class SettingScreen extends Component {
 
   constructor(props) {
     super(props);
-  
-    const stocks = [
-      {
-        name: 'bitcoin',
-        image: require('../../res/images/bitcoin.png')
-      },
-      {
-        name: 'ethereum',
-        image: require('../../res/images/bitcoin.png')
-      },
-      {
-        name: 'eos',
-        image: require('../../res/images/bitcoin.png')
-      }
-    ];
-    
-    const ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2
-    });
 
     this.state = {
-      dataSource: ds.cloneWithRows(stocks),
       isLoading: true,
-      socket: null
     };
+  }
+
+  componentDidMount() {
+    this.props.screenProps.navigationEvents.addListener(`onFocus:${ROUTE_NAME}`, this.onFocus);
+  }
+
+  onFocus = () => {
+    const socket = UserSocket.getSocket();
+    socket.channel.push('new-request', { type: 'list-alerts' });
+    socket.channel.on('response', payload => {
+      console.log(payload.alerts);
+      const stocks = [
+        {
+          name: 'bitcoin',
+          image: require('../../res/images/bitcoin.png')
+        },
+        {
+          name: 'ethereum',
+          image: require('../../res/images/bitcoin.png')
+        },
+        {
+          name: 'eos',
+          image: require('../../res/images/bitcoin.png')
+        }
+      ];
+
+      const ds = new ListView.DataSource({
+        rowHasChanged: (r1, r2) => r1 !== r2
+      });
+      this.setState({
+        dataSource: ds.cloneWithRows(stocks),
+        isLoading: false,
+      });
+    });
   }
 
   renderRow = (stock) => (
@@ -86,7 +102,7 @@ class SettingScreen extends Component {
       );
     } 
     return (
-      <View>
+      <View style={{ flex: 1 }}>
         <Header
           leftComponent={{ icon: 'menu', color: '#fff' }}
           centerComponent={{ 
@@ -105,5 +121,5 @@ class SettingScreen extends Component {
   }
 }
 
-export default connect(null)(SettingScreen);
+export default connect(null, actions)(SettingScreen);
 
